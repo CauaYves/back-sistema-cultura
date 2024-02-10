@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { createUser } from "@/controllers/index";
+import { createUser, singIn } from "@/controllers/index";
 import { validateBody } from "@/middlewares";
-import { signupSchema } from "@/schemas";
+import { signinSchema, signupSchema } from "@/schemas";
 
 const authrouter = Router();
 
-authrouter.post("/signup", validateBody(signupSchema), createUser);
+authrouter.post("/sign-up", validateBody(signupSchema), createUser);
+authrouter.post("/sign-in", validateBody(signinSchema), singIn);
 
 export { authrouter };

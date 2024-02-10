@@ -8,5 +8,9 @@ const signupSchema = Zod.object({
     .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
   password: Zod.string().min(6, "mínimo de 6 caracteres.").max(24, "máximo de 24 caracteres."),
 });
+const signinSchema = Zod.object({
+  email: Zod.string().email(),
+  password: Zod.string(),
+});
 
-export { signupSchema };
+export { signupSchema, signinSchema };
