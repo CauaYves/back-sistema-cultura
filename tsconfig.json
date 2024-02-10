@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    },
+    "target": "es2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "noImplicitAny": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "rootDirs": ["src", "tests"],
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      }
+    ]
+  },
+  "include": ["src**/*", "tests", "prisma"]
+}
