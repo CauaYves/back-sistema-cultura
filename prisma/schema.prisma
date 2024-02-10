@@ -10,16 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model signin {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  cpf       String    @unique
+  email     String    @unique
+  password  String
+  Session   Session[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-model signup {
-  id       Int    @id @default(autoincrement())
-  name     String
-  cpf      String
-  email    String @unique
-  password String
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
