@@ -1,8 +1,12 @@
 import Zod from "zod";
 
-export const signupSchema = Zod.object({
+const signupSchema = Zod.object({
   name: Zod.string(),
-  cpf: Zod.string(),
-  email: Zod.string(),
-  password: Zod.string(),
+  cpf: Zod.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido."),
+  email: Zod.string()
+    .email()
+    .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
+  password: Zod.string().min(6, "mínimo de 6 caracteres.").max(24, "máximo de 24 caracteres."),
 });
+
+export { signupSchema };

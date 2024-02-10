@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { authController } from "@/controllers/index";
-import { validateBody } from "../middlewares/validation-middleware";
-import { signupSchema } from "../schemas/auth-schema";
+import { createUser } from "@/controllers/index";
+import { validateBody } from "@/middlewares";
+import { signupSchema } from "@/schemas";
 
 const authrouter = Router();
 
-authrouter.post("/signup", validateBody(signupSchema), authController);
+authrouter.post("/signup", validateBody(signupSchema), createUser);
 
 export { authrouter };
