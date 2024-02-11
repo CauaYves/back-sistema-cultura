@@ -5,8 +5,10 @@ const signupSchema = Zod.object({
   cpf: Zod.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
   email: Zod.string()
     .email()
-    .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com "),
-  password: Zod.string().min(6, "mínimo de 6 caracteres.").max(24, "máximo de 24 caracteres. "),
+    .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
+  password: Zod.string()
+    .min(6, "a senha precisa de no mínimo 6 caracteres.")
+    .max(24, "a senha precisa de no máximo 24 caracteres."),
 });
 const signinSchema = Zod.object({
   email: Zod.string()
