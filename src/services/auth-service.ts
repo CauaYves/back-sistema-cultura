@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { conflictError, invalidDataError } from "@/errors";
+import { conflictError, invalidDataError, notFoundError } from "@/errors";
 import { userRepository, sessionRepository } from "@/repositories";
 import { exclude } from "@/utils";
 import bcrypt from "bcrypt";
@@ -30,7 +30,7 @@ async function signIn(params: SignInParams) {
 
 async function getUserOrFail(email: string) {
   const user = await userRepository.findOneByEmail(email, { id: true, email: true, password: true });
-  if (!user) throw invalidDataError(["email ou senha incorretos"]);
+  if (!user) throw notFoundError();
 
   return user;
 }
