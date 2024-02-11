@@ -1,13 +1,8 @@
 import { ApplicationError } from "../protocols";
 
-export function invalidDataError(details: string[]): ApplicationInvalidateDataError {
+export function invalidDataError(message: string): ApplicationError {
   return {
     name: "InvalidDataError",
-    message: "Invalid data",
-    details,
+    message,
   };
 }
-
-type ApplicationInvalidateDataError = ApplicationError & {
-  details: string[];
-};
