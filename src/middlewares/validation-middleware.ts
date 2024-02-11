@@ -14,7 +14,7 @@ function validate<T extends ZodRawShape>(schema: ZodObject<T>, type: "body" | "p
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.message));
+        res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.errors.map((e) => e.message)));
       } else {
         next(error);
       }
