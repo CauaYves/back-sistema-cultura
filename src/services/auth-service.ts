@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { conflictError, invalidDataError, notFoundError } from "@/errors";
+import { conflictError, notFoundError, unprocessableEntityError } from "@/errors";
 import { userRepository, sessionRepository } from "@/repositories";
 import { exclude } from "@/utils";
 import bcrypt from "bcrypt";
@@ -37,7 +37,7 @@ async function getUserOrFail(email: string) {
 
 async function validatePasswordOrFail(password: string, userPassword: string) {
   const isPasswordValid = await bcrypt.compare(password, userPassword);
-  if (!isPasswordValid) throw invalidDataError(["email ou senha incorretos"]);
+  if (!isPasswordValid) throw unprocessableEntityError("email ou senha incorretos");
 }
 
 async function createSession(userId: number) {

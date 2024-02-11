@@ -21,9 +21,7 @@ async function singIn(req: Request, res: Response) {
   } catch (error) {
     if (error.name === "ConflictError") return res.status(httpStatus.CONFLICT).send(error.message);
     if (error.name === "notFoundError") return res.status(httpStatus.NOT_FOUND).send(error.message);
-    if (error.name === "InvalidDataError") return res.status(httpStatus.BAD_REQUEST).send(error.details);
-
-    return res.status(httpStatus.UNAUTHORIZED).send(error.message);
+    if (error.name === "unprocessableEntityError") res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
   }
 }
 export { createUser, singIn };
