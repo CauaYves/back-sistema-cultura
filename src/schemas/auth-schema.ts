@@ -6,7 +6,9 @@ const signupSchema = Zod.object({
   email: Zod.string()
     .email()
     .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
-  password: Zod.string().min(6, "mínimo de 6 caracteres.").max(24, "máximo de 24 caracteres."),
+  password: Zod.string()
+    .min(6, "a senha precisa de no mínimo 6 caracteres.")
+    .max(24, "a senha precisa de no máximo 24 caracteres."),
 });
 const signinSchema = Zod.object({
   email: Zod.string().email(),
