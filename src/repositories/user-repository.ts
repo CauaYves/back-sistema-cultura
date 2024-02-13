@@ -8,7 +8,7 @@ async function findOneById(id: number) {
   });
 }
 async function findOneByEmail(email: string, select?: Prisma.UserSelect) {
-  const params: Prisma.UserFindUniqueArgs = {
+  const params: Prisma.UserFindFirstArgs = {
     where: {
       email,
     },
@@ -18,7 +18,21 @@ async function findOneByEmail(email: string, select?: Prisma.UserSelect) {
     params.select = select;
   }
 
-  return prisma.user.findUnique(params);
+  return prisma.user.findFirst(params);
+}
+
+async function findOneByCpf(cpf: string, select?: Prisma.UserSelect) {
+  const params: Prisma.UserFindFirstArgs = {
+    where: {
+      cpf,
+    },
+  };
+
+  if (select) {
+    params.select = select;
+  }
+
+  return prisma.user.findFirst(params);
 }
 
 async function create(userData: User) {
@@ -26,10 +40,21 @@ async function create(userData: User) {
   return user;
 }
 
+async function confirmRegistry(userId: number) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: {
+      emailConfirmed: true,
+    },
+  });
+}
+
 const userRepository = {
+  confirmRegistry,
   findOneById,
   findOneByEmail,
   create,
+  findOneByCpf,
 };
 
 export { userRepository };
