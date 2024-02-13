@@ -1,0 +1,23 @@
+import { env } from "@/schemas";
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: env.EMAIL_SENDER_SERVICE,
+  auth: {
+    user: env.EMAIL_SENDER_USER,
+    pass: env.EMAIL_SENDER_PASSWORD,
+  },
+});
+
+async function sendEmail(to: string, subject: string, text: string) {
+  const mailOptions = {
+    from: env.EMAIL_SENDER_USER,
+    to,
+    subject,
+    text,
+  };
+
+  transporter.sendMail(mailOptions);
+}
+
+export { sendEmail };

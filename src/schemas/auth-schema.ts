@@ -10,6 +10,7 @@ const signupSchema = Zod.object({
     .min(6, "a senha precisa de no mínimo 6 caracteres.")
     .max(24, "a senha precisa de no máximo 24 caracteres."),
 });
+
 const signinSchema = Zod.object({
   email: Zod.string()
     .email("deve ser um email válido ")
@@ -17,4 +18,7 @@ const signinSchema = Zod.object({
   password: Zod.string(),
 });
 
-export { signupSchema, signinSchema };
+const checkConfirmationCodeSchema = Zod.object({
+  code: Zod.string(),
+});
+export { signupSchema, signinSchema, checkConfirmationCodeSchema };

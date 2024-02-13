@@ -1,5 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
 
 generator client {
   provider = "prisma-client-js"
@@ -11,21 +14,33 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  cpf       String    @unique
-  email     String    @unique
-  password  String
-  Session   Session[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                   Int                   @id @default(autoincrement())
+  name                 String
+  cpf                  String                @unique
+  email                String                @unique
+  emailConfirmed       Boolean               @default(false)
+  password             String
+  SessionId            Int?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  Sessions             Session?
+  UserConfirmationCode UserConfirmationCode?
 }
 
 model Session {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
   token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+}
+
+model UserConfirmationCode {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  User      User     @relation(fields: [userId], references: [id])
+  code      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
