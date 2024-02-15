@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { conflictError, forbiddenError, notFoundError, unprocessableEntityError } from "@/errors";
+import { conflictError, forbiddenError, notFoundError, unauthorizedError, unprocessableEntityError } from "@/errors";
 import { sendEmail } from "@/lib/nodemailer";
 import { userRepository, sessionRepository, userConfirmationCodeRepository } from "@/repositories";
 import { exclude } from "@/utils";
@@ -25,7 +25,7 @@ async function signIn(params: SignInParams) {
   const { email, password } = params;
 
   const user = await getUserOrFail(email);
-  if (!user.emailConfirmed) throw forbiddenError("confirme o seu cadastro para fazer login. ");
+  if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
 
   await validatePasswordOrFail(password, user.password);
 
@@ -37,7 +37,12 @@ async function signIn(params: SignInParams) {
 }
 
 async function getUserOrFail(email: string) {
-  const user = await userRepository.findOneByEmail(email, { id: true, email: true, password: true });
+  const user = await userRepository.findOneByEmail(email, {
+    id: true,
+    email: true,
+    password: true,
+    emailConfirmed: true,
+  });
   if (!user) throw notFoundError();
 
   return user;
@@ -76,12 +81,22 @@ async function sendConfirmationEmail(email: string, name: string, userId: number
   return emailInfo;
 }
 
+async function isEmailConfirmed(userId: number) {
+  const user = await userRepository.findOneById(userId);
+  if (user.emailConfirmed) throw forbiddenError("email já confirmado");
+  return;
+}
+
 async function confirmRegistration(code: string) {
   const userId = +code.substring(code.lastIndexOf("_") + 1, code.length);
-  const user = await userRepository.confirmRegistry(userId);
-  if (user.emailConfirmed) {
-    return "cadastro verificado com sucesso! ";
+
+  const userConfirmationCode = await userConfirmationCodeRepository.findOne(userId);
+  if (!userConfirmationCode || userConfirmationCode.code !== code) {
+    throw unauthorizedError();
   }
+  await isEmailConfirmed(userId);
+  await userRepository.confirmRegistry(userId);
+  return "cadastro verificado com sucesso! ";
 }
 
 export type SignInParams = Pick<User, "email" | "password">;
