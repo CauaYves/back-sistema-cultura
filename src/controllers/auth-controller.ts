@@ -33,6 +33,8 @@ async function checkConfirmationCode(req: Request, res: Response) {
     const result = await authService.confirmRegistration(code);
     res.send(result).status(200);
   } catch (error) {
+    if (error.name === "ForbiddenError") return res.status(httpStatus.FORBIDDEN).send(error.message);
+    if (error.name === "UnauthorizedError") return res.status(httpStatus.UNAUTHORIZED).send(error.message);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
