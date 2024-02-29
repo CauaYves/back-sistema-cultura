@@ -14,7 +14,6 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
   if (!token) generateUnauthorizedResponse(res);
 
   const { userId } = jwt.verify(token, env.JWT_SECRET ?? "") as JwtPayload;
-
   const session = await prisma.session.findFirst({
     where: {
       token,

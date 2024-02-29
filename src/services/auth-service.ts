@@ -84,7 +84,6 @@ async function sendConfirmationEmail(email: string, name: string, userId: number
 async function isEmailConfirmed(userId: number) {
   const user = await userRepository.findOneById(userId);
   if (user.emailConfirmed) throw forbiddenError("email já confirmado");
-  return;
 }
 
 async function confirmRegistration(code: string) {
