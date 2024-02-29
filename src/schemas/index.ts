@@ -1,2 +1,3 @@
 export * from "./auth-schema";
-export * from "./env";
+export * from "../config/env";
+export * from "./culturalUser-schema";
