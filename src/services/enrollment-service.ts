@@ -32,8 +32,7 @@ async function saveUser(culturalUser: CulturalModel, fileInfo: FileInfo, userId:
     key: fileKey,
   };
   const file = await enrollmentRepository.createFile(r2File);
-  const user = await enrollmentRepository.create(culturalUser, userId, file.id);
-  console.log(user);
+  await enrollmentRepository.create(culturalUser, userId, file.id);
 
   return { signedUrl, fileId: file.id };
 }

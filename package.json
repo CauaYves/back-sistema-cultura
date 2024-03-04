@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "tsc -p tsconfig.build.json && tscpaths -p tsconfig.build.json -s ./src -o ./dist",
+    "build": "npx prisma migrate deploy && tsc -p tsconfig.build.json && tscpaths -p tsconfig.build.json -s ./src -o ./dist",
     "start": "node dist/server.js",
     "migration:run": "prisma migrate deploy",
     "lint": "eslint .",
     "lint:staged": "lint-staged",
     "test:watch": "jest --watch --passWithNoTests --runInBand",
-    "dev": "tsx watch --env-file .env src/server.ts"
+    "dev": "tsx watch --env-file .env src/server.ts",
+    "migration:run:dev": "prisma generate && prisma migrate dev"
   },
   "author": "Caua Yves",
   "license": "MIT",
