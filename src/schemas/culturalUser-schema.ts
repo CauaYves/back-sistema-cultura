@@ -12,7 +12,7 @@ const enrollmentSchema = Zod.object({
   borndate: Zod.string(),
   nacionality: Zod.string(),
   naturalness: Zod.string(),
-  rg: Zod.string().regex(/^\d{2}\.\d{3}\.\d{3}-\d$/),
+  rg: Zod.string().min(8).max(12),
   issuingbody: Zod.string(),
   uf: Zod.string(),
   gender: Zod.string(),

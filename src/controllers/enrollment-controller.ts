@@ -12,7 +12,6 @@ async function createEnrollment(req: AuthenticatedRequest, res: Response) {
     const response = await enrollmentService.saveUser(culturalUser, fileInfo, userId);
     res.send(response).status(httpStatus.CREATED);
   } catch (error) {
-    console.log(error);
     if (error.name === "ConflictError") return res.status(httpStatus.CONFLICT).send(error.message);
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
