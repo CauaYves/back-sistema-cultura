@@ -1,7 +1,7 @@
 // eslint-disable-next-line boundaries/element-types
 import { env } from "@/config";
 import { CulturalUser, FileInfo } from "@/entities";
-import { conflictError } from "@/errors";
+import { conflictError, notFoundError } from "@/errors";
 import { r2 } from "@/lib";
 import { enrollmentRepository } from "@/repositories";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
@@ -11,6 +11,13 @@ import { randomUUID } from "crypto";
 export interface CulturalModel extends CulturalUser {
   userId: number;
   fileId: string;
+}
+
+async function getCulturalAgent(userId: number) {
+  console.log(userId);
+  const user = await enrollmentRepository.getOneById(userId);
+  if (!user) throw notFoundError();
+  return user;
 }
 
 async function saveUser(culturalUser: CulturalModel, fileInfo: FileInfo, userId: number) {
@@ -40,10 +47,10 @@ async function saveUser(culturalUser: CulturalModel, fileInfo: FileInfo, userId:
 async function getExistentUserById(userId: number) {
   const user = await enrollmentRepository.getOneById(userId);
   if (user) throw conflictError("Usuário já cadastrado");
-  return user;
 }
 
 const enrollmentService = {
   saveUser,
+  getCulturalAgent,
 };
 export { enrollmentService };

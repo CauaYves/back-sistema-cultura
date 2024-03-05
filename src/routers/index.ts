@@ -1,2 +1,3 @@
-export * from "./auth-routers";
-export * from "./enrollment-routes";
+export * from "./auth-router";
+export * from "./enrollment-router";
+export * from "./contact-router";

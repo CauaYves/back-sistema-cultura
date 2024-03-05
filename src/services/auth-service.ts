@@ -1,5 +1,5 @@
 import { User } from "@/entities";
-import { conflictError, forbiddenError, notFoundError, unauthorizedError, unprocessableEntityError } from "@/errors";
+import { conflictError, forbiddenError, notFoundError, unauthorizedError, UnprocessableEntityError } from "@/errors";
 import { sendEmail } from "@/lib/nodemailer";
 import { userRepository, sessionRepository, userConfirmationCodeRepository } from "@/repositories";
 import { exclude } from "@/utils";
@@ -50,7 +50,7 @@ async function getUserOrFail(email: string) {
 
 async function validatePasswordOrFail(password: string, userPassword: string) {
   const isPasswordValid = await bcrypt.compare(password, userPassword);
-  if (!isPasswordValid) throw unprocessableEntityError("email ou senha incorretos");
+  if (!isPasswordValid) throw UnprocessableEntityError("email ou senha incorretos");
 }
 
 async function createOrUpdateSession(userId: number) {

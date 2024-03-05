@@ -26,6 +26,7 @@ model User {
   Sessions             Session?
   UserConfirmationCode UserConfirmationCode?
   CulturalAgent        CulturalAgent?
+  Contact              Contact[]
 }
 
 model Session {
@@ -84,4 +85,13 @@ model File {
   contentType   String
   CulturalAgent CulturalAgent?
   createdAt     DateTime       @default(now())
+}
+
+model Contact {
+  id     Int     @id @default(autoincrement())
+  type   String
+  number String
+  public Boolean
+  userId Int     @unique
+  User   User    @relation(fields: [userId], references: [id])
 }

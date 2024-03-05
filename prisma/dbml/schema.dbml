@@ -15,6 +15,7 @@ Table User {
   Sessions Session
   UserConfirmationCode UserConfirmationCode
   CulturalAgent CulturalAgent
+  Contact Contact [not null]
 }
 
 Table Session {
@@ -75,6 +76,15 @@ Table File {
   createdAt DateTime [default: `now()`, not null]
 }
 
+Table Contact {
+  id Int [pk, increment]
+  type String [not null]
+  number String [not null]
+  public Boolean [not null]
+  userId Int [unique, not null]
+  User User [not null]
+}
+
 Ref: Session.userId - User.id
 
 Ref: UserConfirmationCode.userId - User.id
@@ -82,3 +92,5 @@ Ref: UserConfirmationCode.userId - User.id
 Ref: CulturalAgent.fileId - File.id
 
 Ref: CulturalAgent.userId - User.id
+
+Ref: Contact.userId > User.id

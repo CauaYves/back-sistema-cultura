@@ -33,3 +33,10 @@ export type FileInfo = {
   name: string;
   contentType: string;
 };
+
+export type Contact = {
+  type: string;
+  number: string;
+  public: boolean;
+  userId: number;
+};
