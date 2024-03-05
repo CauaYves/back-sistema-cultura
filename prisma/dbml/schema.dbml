@@ -81,7 +81,7 @@ Table Contact {
   type String [not null]
   number String [not null]
   public Boolean [not null]
-  userId Int [unique, not null]
+  userId Int [not null]
   User User [not null]
 }
 

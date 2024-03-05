@@ -92,6 +92,6 @@ model Contact {
   type   String
   number String
   public Boolean
-  userId Int     @unique
+  userId Int
   User   User    @relation(fields: [userId], references: [id])
 }

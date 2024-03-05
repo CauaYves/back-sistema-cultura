@@ -5,6 +5,9 @@ import { Router } from "express";
 
 const contactRouter = Router();
 
-contactRouter.all("/*", authMiddleware).post("/", validateBody(contactSchema), contactController.create);
+contactRouter
+  .all("/*", authMiddleware)
+  .get("/", contactController.getAllByUserId)
+  .post("/", validateBody(contactSchema), contactController.create);
 
 export { contactRouter };
