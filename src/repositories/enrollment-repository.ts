@@ -31,7 +31,7 @@ async function createFile(data: R2File) {
 
 async function getOneById(userId: number) {
   return prisma.culturalAgent.findUnique({
-    where: { id: userId },
+    where: { userId },
   });
 }
 
