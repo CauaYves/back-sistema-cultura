@@ -8,6 +8,7 @@ const contactRouter = Router();
 contactRouter
   .all("/*", authMiddleware)
   .get("/", contactController.getAllByUserId)
-  .post("/", validateBody(contactSchema), contactController.create);
+  .post("/", validateBody(contactSchema), contactController.create)
+  .delete("/:id", contactController.deleteOneById);
 
 export { contactRouter };

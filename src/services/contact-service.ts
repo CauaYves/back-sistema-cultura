@@ -12,9 +12,14 @@ async function create(userId: number, body: Contact) {
   return contact;
 }
 
+async function deleteOneById(id: number) {
+  await contactRepository.deleteOneById(id);
+}
+
 const contactService = {
   create,
   getAllByUserId,
+  deleteOneById,
 };
 
 export default contactService;

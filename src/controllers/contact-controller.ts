@@ -12,6 +12,7 @@ async function getAllByUserId(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+
 async function create(req: AuthenticatedRequest, res: Response) {
   try {
     const { userId, body } = req;
@@ -22,9 +23,20 @@ async function create(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function deleteOneById(req: AuthenticatedRequest, res: Response) {
+  try {
+    const id = +req.params.id;
+    const response = await contactService.deleteOneById(id);
+    res.status(httpStatus.NO_CONTENT).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const contactController = {
   create,
   getAllByUserId,
+  deleteOneById,
 };
 
 export default contactController;

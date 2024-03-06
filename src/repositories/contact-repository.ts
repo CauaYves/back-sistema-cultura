@@ -14,9 +14,18 @@ async function getAllByUserId(userId: number) {
   });
 }
 
+async function deleteOneById(id: number) {
+  return prisma.contact.delete({
+    where: {
+      id,
+    },
+  });
+}
+
 const contactRepository = {
   create,
   getAllByUserId,
+  deleteOneById,
 };
 
 export { contactRepository };
