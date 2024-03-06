@@ -83,8 +83,8 @@ Table Contact {
   public Boolean [not null]
   userId Int [not null]
   User User [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
+  createdAt DateTime [default: `now()`]
+  updatedAt DateTime
 }
 
 Ref: Session.userId - User.id
