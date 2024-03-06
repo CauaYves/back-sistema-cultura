@@ -88,10 +88,12 @@ model File {
 }
 
 model Contact {
-  id     Int     @id @default(autoincrement())
-  type   String
-  number String
-  public Boolean
-  userId Int
-  User   User    @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  type      String
+  number    String
+  public    Boolean
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
