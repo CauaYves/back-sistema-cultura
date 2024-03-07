@@ -22,10 +22,25 @@ async function deleteOneById(id: number) {
   });
 }
 
+async function getOneById(contactId: number) {
+  return prisma.contact.findUnique({
+    where: { id: contactId },
+  });
+}
+
+async function edit(body: Contact, contactId: number) {
+  return prisma.contact.update({
+    where: { id: contactId },
+    data: body,
+  });
+}
+
 const contactRepository = {
   create,
   getAllByUserId,
   deleteOneById,
+  getOneById,
+  edit,
 };
 
 export { contactRepository };

@@ -33,10 +33,22 @@ async function deleteOneById(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function edit(req: AuthenticatedRequest, res: Response) {
+  try {
+    const id = +req.params.id;
+    const { body } = req;
+    const response = await contactService.edit(body, id);
+    res.status(httpStatus.CREATED).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const contactController = {
   create,
   getAllByUserId,
   deleteOneById,
+  edit,
 };
 
 export default contactController;

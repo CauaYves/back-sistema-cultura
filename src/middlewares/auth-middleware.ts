@@ -29,7 +29,7 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
 }
 
 function generateUnauthorizedResponse(res: Response) {
-  res.status(httpStatus.UNAUTHORIZED).send(unauthorizedError());
+  return res.status(httpStatus.UNAUTHORIZED).send(unauthorizedError());
 }
 export type AuthenticatedRequest = Request & JwtPayload;
 

@@ -9,6 +9,7 @@ contactRouter
   .all("/*", authMiddleware)
   .get("/", contactController.getAllByUserId)
   .post("/", validateBody(contactSchema), contactController.create)
-  .delete("/:id", contactController.deleteOneById);
+  .delete("/:id", contactController.deleteOneById)
+  .put("/:id", validateBody(contactSchema), contactController.edit);
 
 export { contactRouter };

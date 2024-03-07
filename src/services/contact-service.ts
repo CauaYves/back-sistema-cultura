@@ -16,10 +16,15 @@ async function deleteOneById(id: number) {
   await contactRepository.deleteOneById(id);
 }
 
+async function edit(body: Contact, contactId: number) {
+  await contactRepository.edit(body, contactId);
+}
+
 const contactService = {
   create,
   getAllByUserId,
   deleteOneById,
+  edit,
 };
 
 export default contactService;
