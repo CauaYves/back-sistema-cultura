@@ -17,7 +17,8 @@ async function deleteOneById(id: number) {
 }
 
 async function edit(body: Contact, contactId: number) {
-  await contactRepository.edit(body, contactId);
+  const contact = await contactRepository.edit(body, contactId);
+  return contact;
 }
 
 const contactService = {
