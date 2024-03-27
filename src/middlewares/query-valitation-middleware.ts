@@ -3,18 +3,25 @@ import { ZodObject, ZodError, ZodRawShape } from "zod";
 import httpStatus from "http-status";
 import { invalidDataError } from "@/errors";
 
-export function validateQuery<T extends ZodRawShape>(schema: ZodObject<T>): ValidationMiddleware {
+export function validateQuery<T extends ZodRawShape>(
+  schema: ZodObject<T>
+): ValidationMiddleware {
   return validate(schema, "query");
 }
 
-function validate<T extends ZodRawShape>(schema: ZodObject<T>, type: "body" | "params" | "query") {
+function validate<T extends ZodRawShape>(
+  schema: ZodObject<T>,
+  type: "body" | "params" | "query"
+) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       schema.parse(req[type]);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        res.status(httpStatus.BAD_REQUEST).send(invalidDataError(error.errors.map((e) => e.message)));
+        res
+          .status(httpStatus.BAD_REQUEST)
+          .send(invalidDataError(error.errors.map((e) => e.message)));
       } else {
         next(error);
       }
@@ -22,4 +29,8 @@ function validate<T extends ZodRawShape>(schema: ZodObject<T>, type: "body" | "p
   };
 }
 
-type ValidationMiddleware = (req: Request, res: Response, next: NextFunction) => void;
+type ValidationMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => void;

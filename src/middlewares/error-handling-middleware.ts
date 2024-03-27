@@ -7,7 +7,7 @@ export function handleApplicationErrors(
   _req: Request,
   res: Response,
   // eslint-disable-next-line no-unused-vars
-  next: NextFunction,
+  next: NextFunction
 ) {
   if (err.name === "ConflictError" || err.name === "DuplicatedEmailError") {
     return res.status(httpStatus.CONFLICT).send({
@@ -33,7 +33,10 @@ export function handleApplicationErrors(
     });
   }
 
-  if (err.name === "UnprocessableEntityError" || err.name === "InvalidDataError") {
+  if (
+    err.name === "UnprocessableEntityError" ||
+    err.name === "InvalidDataError"
+  ) {
     return res.status(httpStatus.UNPROCESSABLE_ENTITY).send({
       message: err.message,
     });

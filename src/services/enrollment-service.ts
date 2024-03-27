@@ -14,13 +14,16 @@ export interface CulturalModel extends CulturalUser {
 }
 
 async function getCulturalAgent(userId: number) {
-  console.log(userId);
   const user = await enrollmentRepository.getOneById(userId);
   if (!user) throw notFoundError();
   return user;
 }
 
-async function saveUser(culturalUser: CulturalModel, fileInfo: FileInfo, userId: number) {
+async function saveUser(
+  culturalUser: CulturalModel,
+  fileInfo: FileInfo,
+  userId: number
+) {
   await getExistentUserById(userId);
 
   const { name } = fileInfo;
@@ -32,7 +35,7 @@ async function saveUser(culturalUser: CulturalModel, fileInfo: FileInfo, userId:
       Bucket: env.CLOUDFLARE_BUCKET_NAME,
       Key: fileKey,
     }),
-    { expiresIn: URLexpirationTime },
+    { expiresIn: URLexpirationTime }
   );
   const r2File = {
     ...fileInfo,

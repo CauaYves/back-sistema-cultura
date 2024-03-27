@@ -9,6 +9,7 @@
     "module": "commonjs",
     "outDir": "dist",
     "noImplicitAny": true,
+    "noImplicitReturns": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "esModuleInterop": true,
