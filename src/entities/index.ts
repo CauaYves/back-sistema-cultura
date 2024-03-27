@@ -40,3 +40,18 @@ export type Contact = {
   public: boolean;
   userId: number;
 };
+
+export type Collective = {
+  name: string;
+  area: string;
+  opening: string;
+  phone: string;
+  email: string;
+  address: string;
+  neighboorhood: string;
+  cep: string;
+  complement: string;
+  county: string;
+  responsible: string;
+  userId: number;
+};

@@ -4,9 +4,13 @@ import httpStatus from "http-status";
 import { unauthorizedError } from "@/errors";
 import { env, prisma } from "@/config";
 
-export async function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function authMiddleware(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   const authorization = req.header("Authorization");
-  if (!authorization) generateUnauthorizedResponse(res);
+  if (!authorization) return generateUnauthorizedResponse(res);
 
   const token = authorization.split(" ")[1];
 
@@ -20,17 +24,20 @@ export async function authMiddleware(req: AuthenticatedRequest, res: Response, n
         token,
       },
     });
-    if (!session) throw generateUnauthorizedResponse(res);
+    if (!session) return generateUnauthorizedResponse(res);
     req.userId = userId;
-    next();
+    return next();
   } catch (error) {
-    return res.status(httpStatus.UNAUTHORIZED).send("token de acesso expirado, faça login novamente!");
+    return res
+      .status(httpStatus.UNAUTHORIZED)
+      .send("token de acesso expirado, faça login novamente!");
   }
 }
 
 function generateUnauthorizedResponse(res: Response) {
   return res.status(httpStatus.UNAUTHORIZED).send(unauthorizedError());
 }
+
 export type AuthenticatedRequest = Request & JwtPayload;
 
 type JwtPayload = {

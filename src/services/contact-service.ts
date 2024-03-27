@@ -28,4 +28,4 @@ const contactService = {
   edit,
 };
 
-export default contactService;
+export { contactService };

@@ -10,21 +10,22 @@ Table User {
   emailConfirmed Boolean [not null, default: false]
   password String [not null]
   SessionId Int
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
   Sessions Session
   UserConfirmationCode UserConfirmationCode
   CulturalAgent CulturalAgent
   Contact Contact [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  CulturalCollective CulturalCollective [not null]
 }
 
 Table Session {
   id Int [pk, increment]
   userId Int [unique, not null]
   token String [not null]
+  User User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  User User [not null]
 }
 
 Table UserConfirmationCode {
@@ -87,6 +88,25 @@ Table Contact {
   updatedAt DateTime [not null]
 }
 
+Table CulturalCollective {
+  id Int [pk, increment]
+  name String [not null]
+  area String [not null]
+  opening String [not null]
+  phone String [not null]
+  email String [not null]
+  address String [not null]
+  neighboorhood String [not null]
+  cep String [not null]
+  complement String [not null]
+  county String [not null]
+  responsible String [not null]
+  userId Int [not null]
+  User User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Ref: Session.userId - User.id
 
 Ref: UserConfirmationCode.userId - User.id
@@ -96,3 +116,5 @@ Ref: CulturalAgent.fileId - File.id
 Ref: CulturalAgent.userId - User.id
 
 Ref: Contact.userId > User.id
+
+Ref: CulturalCollective.userId > User.id

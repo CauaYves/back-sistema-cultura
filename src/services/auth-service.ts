@@ -1,7 +1,17 @@
 import { User } from "@/entities";
-import { conflictError, forbiddenError, notFoundError, unauthorizedError, UnprocessableEntityError } from "@/errors";
+import {
+  conflictError,
+  forbiddenError,
+  notFoundError,
+  unauthorizedError,
+  UnprocessableEntityError,
+} from "@/errors";
 import { sendEmail } from "@/lib/nodemailer";
-import { userRepository, sessionRepository, userConfirmationCodeRepository } from "@/repositories";
+import {
+  userRepository,
+  sessionRepository,
+  userConfirmationCodeRepository,
+} from "@/repositories";
 import { exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -15,7 +25,10 @@ async function create(body: User) {
   if (existentUserWithCpf) throw conflictError("cpf já cadastrado.");
 
   const hashedPassword = await bcrypt.hash(body.password, 12);
-  const newUser = await userRepository.create({ ...body, password: hashedPassword });
+  const newUser = await userRepository.create({
+    ...body,
+    password: hashedPassword,
+  });
 
   await sendConfirmationEmail(body.email, body.name, newUser.id);
   return newUser;
@@ -25,7 +38,8 @@ async function signIn(params: SignInParams) {
   const { email, password } = params;
 
   const user = await getUserOrFail(email);
-  if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
+  if (!user.emailConfirmed)
+    throw forbiddenError("confirme seu email antes de prosseguir");
 
   await validatePasswordOrFail(password, user.password);
 
@@ -50,12 +64,15 @@ async function getUserOrFail(email: string) {
 
 async function validatePasswordOrFail(password: string, userPassword: string) {
   const isPasswordValid = await bcrypt.compare(password, userPassword);
-  if (!isPasswordValid) throw UnprocessableEntityError("email ou senha incorretos");
+  if (!isPasswordValid)
+    throw UnprocessableEntityError("email ou senha incorretos");
 }
 
 async function createOrUpdateSession(userId: number) {
   const expirationTime = "8h";
-  const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: expirationTime });
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
+    expiresIn: expirationTime,
+  });
 
   const existentToken = await sessionRepository.findOne(userId);
   if (!existentToken) {
@@ -69,7 +86,11 @@ async function createOrUpdateSession(userId: number) {
   return updatedToken.token;
 }
 
-async function sendConfirmationEmail(email: string, name: string, userId: number) {
+async function sendConfirmationEmail(
+  email: string,
+  name: string,
+  userId: number
+) {
   const code = uuidv4();
   const confirmationCode = code.concat(`_${userId}`);
   await userConfirmationCodeRepository.create(confirmationCode, userId);
@@ -89,7 +110,9 @@ async function isEmailConfirmed(userId: number) {
 async function confirmRegistration(code: string) {
   const userId = +code.substring(code.lastIndexOf("_") + 1, code.length);
 
-  const userConfirmationCode = await userConfirmationCodeRepository.findOne(userId);
+  const userConfirmationCode = await userConfirmationCodeRepository.findOne(
+    userId
+  );
   if (!userConfirmationCode || userConfirmationCode.code !== code) {
     throw unauthorizedError();
   }

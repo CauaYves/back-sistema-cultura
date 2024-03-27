@@ -8,6 +8,10 @@ const enrollmentsRouter = Router();
 enrollmentsRouter
   .all("/*", authMiddleware)
   .get("/", enrollmentController.get)
-  .post("/identification", validateBody(enrollmentSchema), enrollmentController.create);
+  .post(
+    "/identification",
+    validateBody(enrollmentSchema),
+    enrollmentController.create
+  );
 
 export { enrollmentsRouter };

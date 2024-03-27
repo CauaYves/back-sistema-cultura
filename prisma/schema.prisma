@@ -21,21 +21,22 @@ model User {
   emailConfirmed       Boolean               @default(false)
   password             String
   SessionId            Int?
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
   Sessions             Session?
   UserConfirmationCode UserConfirmationCode?
   CulturalAgent        CulturalAgent?
   Contact              Contact[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  CulturalCollective   CulturalCollective[]
 }
 
 model Session {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   token     String
+  User      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
 }
 
 model UserConfirmationCode {
@@ -96,4 +97,23 @@ model Contact {
   User      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model CulturalCollective {
+  id            Int      @id @default(autoincrement())
+  name          String
+  area          String
+  opening       String
+  phone         String
+  email         String
+  address       String
+  neighboorhood String
+  cep           String
+  complement    String
+  county        String
+  responsible   String
+  userId        Int
+  User          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
