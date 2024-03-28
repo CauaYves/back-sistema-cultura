@@ -53,6 +53,7 @@ async function signIn(params: SignInParams) {
 async function getUserOrFail(email: string) {
   const user = await userRepository.findOneByEmail(email, {
     id: true,
+    name: true,
     email: true,
     password: true,
     emailConfirmed: true,
