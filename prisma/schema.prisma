@@ -109,7 +109,7 @@ model CulturalCollective {
   address       String
   neighboorhood String
   cep           String
-  complement    String
+  complement    String?
   county        String
   responsible   String
   userId        Int
