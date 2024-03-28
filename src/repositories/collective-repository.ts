@@ -13,9 +13,16 @@ async function getOneByUserId(userId: number) {
   });
 }
 
+async function getManyByUserId(userId: number) {
+  return prisma.culturalCollective.findMany({
+    where: { userId },
+  });
+}
+
 const collectiveRepository = {
   create,
   getOneByUserId,
+  getManyByUserId,
 };
 
 export { collectiveRepository };

@@ -7,6 +7,7 @@ const collectiveRouter = Router();
 
 collectiveRouter
   .all("/*", authMiddleware)
+  .get("/", collectiveController.get)
   .post("/", validateBody(collectiveSchema), collectiveController.create);
 
 export { collectiveRouter };
