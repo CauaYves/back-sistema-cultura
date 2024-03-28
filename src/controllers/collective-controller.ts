@@ -17,9 +17,19 @@ async function create(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+async function get(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const response = await collectiveService.getManyByUserId(userId);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
 
 const collectiveController = {
   create,
+  get,
 };
 
 export default collectiveController;
