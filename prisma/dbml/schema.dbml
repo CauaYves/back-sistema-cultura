@@ -98,7 +98,7 @@ Table CulturalCollective {
   address String [not null]
   neighboorhood String [not null]
   cep String [not null]
-  complement String [not null]
+  complement String
   county String [not null]
   responsible String [not null]
   userId Int [not null]
