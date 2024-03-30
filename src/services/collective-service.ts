@@ -18,9 +18,15 @@ async function create(body: Collective, userId: number) {
   return collective;
 }
 
+async function update(body: Collective, collectiveId: number) {
+  const collective = await collectiveRepository.edit(body, collectiveId);
+  return collective;
+}
+
 const collectiveService = {
   create,
   getManyByUserId,
+  update,
 };
 
 export { collectiveService };
