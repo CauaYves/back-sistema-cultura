@@ -17,6 +17,7 @@ async function create(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+
 async function get(req: AuthenticatedRequest, res: Response) {
   try {
     const { userId } = req;
@@ -27,9 +28,27 @@ async function get(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function update(req: AuthenticatedRequest, res: Response) {
+  try {
+    const id = +req.params.id;
+    const { body } = req;
+    const response = await collectiveService.update(body, id);
+    return res.status(httpStatus.NO_CONTENT).send(response);
+  } catch (error) {
+    console.log(error);
+    if (error.name === "UnprocessableEntityError")
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
+    if (error.name === "ConflictError") {
+      return res.status(httpStatus.CONFLICT).send(error.message);
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const collectiveController = {
   create,
   get,
+  update,
 };
 
 export default collectiveController;

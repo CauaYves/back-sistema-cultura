@@ -19,10 +19,18 @@ async function getManyByUserId(userId: number) {
   });
 }
 
+async function edit(body: Collective, collectiveId: number) {
+  return prisma.culturalCollective.update({
+    where: { id: collectiveId },
+    data: body,
+  });
+}
+
 const collectiveRepository = {
   create,
   getOneByUserId,
   getManyByUserId,
+  edit,
 };
 
 export { collectiveRepository };
