@@ -35,7 +35,6 @@ async function update(req: AuthenticatedRequest, res: Response) {
     const response = await collectiveService.update(body, id);
     return res.status(httpStatus.NO_CONTENT).send(response);
   } catch (error) {
-    console.log(error);
     if (error.name === "UnprocessableEntityError")
       return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
     if (error.name === "ConflictError") {
@@ -45,10 +44,21 @@ async function update(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function deleteOne(req: AuthenticatedRequest, res: Response) {
+  try {
+    const id = +req.params.id;
+    const response = await collectiveService.deleteOne(id);
+    return res.status(httpStatus.NO_CONTENT).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const collectiveController = {
   create,
   get,
   update,
+  deleteOne,
 };
 
 export default collectiveController;

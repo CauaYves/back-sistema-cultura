@@ -26,11 +26,18 @@ async function edit(body: Collective, collectiveId: number) {
   });
 }
 
+async function deleteOne(collectiveId: number) {
+  return prisma.culturalCollective.delete({
+    where: { id: collectiveId },
+  });
+}
+
 const collectiveRepository = {
   create,
   getOneByUserId,
   getManyByUserId,
   edit,
+  deleteOne,
 };
 
 export { collectiveRepository };

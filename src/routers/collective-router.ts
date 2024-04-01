@@ -9,6 +9,7 @@ collectiveRouter
   .all("/*", authMiddleware)
   .get("/", collectiveController.get)
   .post("/", validateBody(collectiveSchema), collectiveController.create)
+  .delete("/:id", collectiveController.deleteOne)
   .put("/:id", validateBody(collectiveSchema), collectiveController.update);
 
 export { collectiveRouter };
