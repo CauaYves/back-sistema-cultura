@@ -23,10 +23,15 @@ async function update(body: Collective, collectiveId: number) {
   return collective;
 }
 
+async function deleteOne(collectiveId: number) {
+  await collectiveRepository.deleteOne(collectiveId);
+}
+
 const collectiveService = {
   create,
   getManyByUserId,
   update,
+  deleteOne,
 };
 
 export { collectiveService };
