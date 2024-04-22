@@ -12,10 +12,10 @@ import {
   sessionRepository,
   userConfirmationCodeRepository,
 } from "@/repositories";
+import { generateHtml } from "@/templates";
 import { exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { v4 as uuidv4 } from "uuid";
 
 async function create(body: User) {
   const existentUserWithEmail = await userRepository.findOneByEmail(body.email);
@@ -87,17 +87,21 @@ async function createOrUpdateSession(userId: number) {
   return updatedToken.token;
 }
 
+function generateVerificationCode(userId: number) {
+  const randomNum = Math.floor(Math.random() * 9000) + 1000;
+  return randomNum.toString() + userId;
+}
+
 async function sendConfirmationEmail(
   email: string,
   name: string,
   userId: number
 ) {
-  const code = uuidv4();
-  const confirmationCode = code.concat(`_${userId}`);
-  await userConfirmationCodeRepository.create(confirmationCode, userId);
+  const code = generateVerificationCode(userId);
+  await userConfirmationCodeRepository.create(code, userId);
 
   const subject = "confirme seu cadastro no sistema cultural";
-  const text = `Olá ${name}! esse é o seu código de confirmação do cadastro, não compartilhe com ninguém, após alguns minutos esse código não será utilizável. código: ${confirmationCode}`;
+  const text = generateHtml(email, code);
 
   const emailInfo = await sendEmail(email, subject, text);
   return emailInfo;
@@ -109,11 +113,11 @@ async function isEmailConfirmed(userId: number) {
 }
 
 async function confirmRegistration(code: string) {
-  const userId = +code.substring(code.lastIndexOf("_") + 1, code.length);
-
+  const userId = +code.substring(4, code.length);
   const userConfirmationCode = await userConfirmationCodeRepository.findOne(
     userId
   );
+
   if (!userConfirmationCode || userConfirmationCode.code !== code) {
     throw unauthorizedError();
   }

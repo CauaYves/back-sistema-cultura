@@ -37,6 +37,7 @@ async function singIn(req: Request, res: Response) {
 async function checkConfirmationCode(req: Request, res: Response) {
   try {
     const code = `${req.query.code}`;
+
     const result = await authService.confirmRegistration(code);
     return res.send(result).status(200);
   } catch (error) {
