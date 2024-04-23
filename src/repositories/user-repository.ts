@@ -49,12 +49,20 @@ async function confirmRegistry(userId: number) {
   });
 }
 
+async function updatePassword(userId: number, password: string) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: { password },
+  });
+}
+
 const userRepository = {
   confirmRegistry,
   findOneById,
   findOneByEmail,
   create,
   findOneByCpf,
+  updatePassword,
 };
 
 export { userRepository };

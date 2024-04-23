@@ -24,4 +24,16 @@ const signinSchema = Zod.object({
 const checkConfirmationCodeSchema = Zod.object({
   code: Zod.string(),
 });
-export { signupSchema, signinSchema, checkConfirmationCodeSchema };
+
+const forgotPasswordSchema = Zod.object({
+  email: Zod.string()
+    .email()
+    .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
+});
+
+export {
+  signupSchema,
+  signinSchema,
+  checkConfirmationCodeSchema,
+  forgotPasswordSchema,
+};
