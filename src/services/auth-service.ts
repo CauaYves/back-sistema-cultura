@@ -12,7 +12,11 @@ import {
   sessionRepository,
   userConfirmationCodeRepository,
 } from "@/repositories";
-import { generateHtml } from "@/templates";
+import {
+  confirmRegisterTexts,
+  generateHtml,
+  recoverPasswordTexts,
+} from "@/templates";
 import { exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -87,9 +91,10 @@ async function createOrUpdateSession(userId: number) {
   return updatedToken.token;
 }
 
-function generateVerificationCode(userId: number) {
+async function generateVerificationCode(userId: number) {
   const randomNum = Math.floor(Math.random() * 9000) + 1000;
-  return randomNum.toString() + userId;
+  const code = randomNum.toString() + userId;
+  return code;
 }
 
 async function sendConfirmationEmail(
@@ -97,11 +102,11 @@ async function sendConfirmationEmail(
   name: string,
   userId: number
 ) {
-  const code = generateVerificationCode(userId);
-  await userConfirmationCodeRepository.create(code, userId);
+  const code = await generateVerificationCode(userId);
 
-  const subject = "confirme seu cadastro no sistema cultural";
-  const text = generateHtml(email, code);
+  const subject = "Confirme seu cadastro na Culturalize";
+  await userConfirmationCodeRepository.create(code, userId);
+  const text = generateHtml(email, code, confirmRegisterTexts);
 
   const emailInfo = await sendEmail(email, subject, text);
   return emailInfo;
@@ -126,11 +131,46 @@ async function confirmRegistration(code: string) {
   return "cadastro verificado com sucesso! ";
 }
 
-export type SignInParams = Pick<User, "email" | "password">;
+async function recoverPassword(email: string) {
+  const userFound = await userRepository.findOneByEmail(email);
+  if (!userFound) throw notFoundError();
 
+  const code = await generateVerificationCode(userFound.id);
+  const verificationCode = await userConfirmationCodeRepository.update(
+    code,
+    userFound.id
+  );
+  console.log(verificationCode);
+  const subject = "Código de verificação Culturalize";
+  const text = generateHtml(email, code, recoverPasswordTexts);
+
+  const emailInfo = await sendEmail(email, subject, text);
+  return emailInfo;
+}
+
+async function updatePassword(body: UpdatePasswordType) {
+  const user = await userRepository.findOneByEmail(body.email);
+  const verificationCode = await userConfirmationCodeRepository.findOne(
+    user.id
+  );
+
+  if (verificationCode.code !== body.code) {
+    throw forbiddenError("código de verificação não confere");
+  }
+  const hashedPassword = await bcrypt.hash(body.password, 12);
+
+  await userRepository.updatePassword(user.id, hashedPassword);
+}
+
+export type SignInParams = Pick<User, "email" | "password">;
+interface UpdatePasswordType extends SignInParams {
+  code: string;
+}
 const authService = {
   confirmRegistration,
   create,
   signIn,
+  recoverPassword,
+  updatePassword,
 };
 export { authService };

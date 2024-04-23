@@ -49,4 +49,34 @@ async function checkConfirmationCode(req: Request, res: Response) {
   }
 }
 
-export { createUser, singIn, checkConfirmationCode };
+async function forgotPassword(req: Request, res: Response) {
+  try {
+    const { email } = req.body;
+    const result = await authService.recoverPassword(email);
+    return res.send(result).status(200);
+  } catch (error) {
+    if (error.name === "NotFoundError")
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
+async function updatePassword(req: Request, res: Response) {
+  try {
+    const { body } = req;
+    const result = await authService.updatePassword(body);
+    return res.send(result).status(200);
+  } catch (error) {
+    if (error.name === "ForbiddenError")
+      return res.status(httpStatus.FORBIDDEN).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
+export {
+  createUser,
+  singIn,
+  checkConfirmationCode,
+  forgotPassword,
+  updatePassword,
+};
