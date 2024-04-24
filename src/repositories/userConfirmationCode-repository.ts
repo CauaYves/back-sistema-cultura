@@ -24,9 +24,19 @@ async function findOne(userId: number) {
   });
 }
 
+async function updateVerificationCode(userId: number, used: boolean) {
+  return prisma.userConfirmationCode.update({
+    where: { userId },
+    data: {
+      used,
+    },
+  });
+}
+
 const userConfirmationCodeRepository = {
   create,
   update,
   findOne,
+  updateVerificationCode,
 };
 export { userConfirmationCodeRepository };

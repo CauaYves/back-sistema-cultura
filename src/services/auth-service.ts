@@ -17,7 +17,7 @@ import {
   generateHtml,
   recoverPasswordTexts,
 } from "@/templates";
-import { exclude } from "@/utils";
+import { dateFunctions, exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -135,12 +135,12 @@ async function recoverPassword(email: string) {
   const userFound = await userRepository.findOneByEmail(email);
   if (!userFound) throw notFoundError();
 
-  const code = await generateVerificationCode(userFound.id);
-  const verificationCode = await userConfirmationCodeRepository.update(
-    code,
-    userFound.id
+  await userConfirmationCodeRepository.updateVerificationCode(
+    userFound.id,
+    false
   );
-  console.log(verificationCode);
+  const code = await generateVerificationCode(userFound.id);
+  await userConfirmationCodeRepository.update(code, userFound.id);
   const subject = "Código de verificação Culturalize";
   const text = generateHtml(email, code, recoverPasswordTexts);
 
@@ -153,13 +153,24 @@ async function updatePassword(body: UpdatePasswordType) {
   const verificationCode = await userConfirmationCodeRepository.findOne(
     user.id
   );
+  const timeLimitInSeconds = 600;
 
-  if (verificationCode.code !== body.code) {
-    throw forbiddenError("código de verificação não confere");
+  const stampWhoAsBeenCreated = dateFunctions.transformDatetimeInTimestamp(
+    verificationCode.updatedAt
+  );
+
+  const stampNow = dateFunctions.getAtualTimestamp();
+
+  if (
+    stampNow - stampWhoAsBeenCreated >= timeLimitInSeconds ||
+    verificationCode.code !== body.code ||
+    verificationCode.used
+  ) {
+    throw forbiddenError("código de verificação inválido! ");
   }
   const hashedPassword = await bcrypt.hash(body.password, 12);
-
   await userRepository.updatePassword(user.id, hashedPassword);
+  await userConfirmationCodeRepository.updateVerificationCode(user.id, true);
 }
 
 export type SignInParams = Pick<User, "email" | "password">;
