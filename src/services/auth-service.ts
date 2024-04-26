@@ -68,6 +68,7 @@ async function getUserOrFail(email: string) {
     id: true,
     name: true,
     email: true,
+    cpf: true,
     password: true,
     emailConfirmed: true,
   });
