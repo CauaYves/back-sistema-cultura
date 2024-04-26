@@ -44,6 +44,7 @@ model UserConfirmationCode {
   userId    Int      @unique
   User      User     @relation(fields: [userId], references: [id])
   code      String
+  used      Boolean? @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -118,13 +119,13 @@ model CulturalCollective {
   updatedAt     DateTime @updatedAt
 }
 
-model Project {
-  id           Int       @id @default(autoincrement())
-  title        String
-  observations String
-  lines        String[]
-  openingDate  DateTime
-  endDate      DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-}
+// model Project {
+//   id           Int       @id @default(autoincrement())
+//   title        String
+//   observations String
+//   lines        String[]
+//   openingDate  DateTime
+//   endDate      DateTime?
+//   createdAt    DateTime  @default(now())
+//   updatedAt    DateTime  @updatedAt
+// }

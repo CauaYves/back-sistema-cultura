@@ -2,11 +2,20 @@ import { prisma } from "@/config";
 import { User } from "@/entities";
 import { Prisma } from "@prisma/client";
 
-async function findOneById(id: number) {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+async function findOneById(id: number, select?: Prisma.UserSelect) {
+  const params: Prisma.UserFindFirstArgs = {
+    where: {
+      id,
+    },
+  };
+
+  if (select) {
+    params.select = select;
+  }
+
+  return prisma.user.findFirst(params);
 }
+
 async function findOneByEmail(email: string, select?: Prisma.UserSelect) {
   const params: Prisma.UserFindFirstArgs = {
     where: {

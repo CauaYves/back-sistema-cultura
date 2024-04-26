@@ -1,6 +1,17 @@
+import { AuthenticatedRequest } from "@/middlewares";
 import { authService } from "@/services";
 import { Request, Response } from "express";
 import httpStatus from "http-status";
+
+async function getUserInfo(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const response = await authService.getUserById(userId);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
 
 async function createUser(req: Request, res: Response) {
   try {
@@ -36,7 +47,7 @@ async function singIn(req: Request, res: Response) {
 
 async function checkConfirmationCode(req: Request, res: Response) {
   try {
-    const code = `${req.query.code}`;
+    const code = req.query.code.toString();
 
     const result = await authService.confirmRegistration(code);
     return res.send(result).status(200);
@@ -74,6 +85,7 @@ async function updatePassword(req: Request, res: Response) {
 }
 
 export {
+  getUserInfo,
   createUser,
   singIn,
   checkConfirmationCode,

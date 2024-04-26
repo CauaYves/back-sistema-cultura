@@ -1,12 +1,13 @@
 import { Router } from "express";
 import {
+  getUserInfo,
   checkConfirmationCode,
   createUser,
   singIn,
   forgotPassword,
   updatePassword,
 } from "@/controllers";
-import { validateBody, validateQuery } from "@/middlewares";
+import { authMiddleware, validateBody, validateQuery } from "@/middlewares";
 import {
   checkConfirmationCodeSchema,
   signinSchema,
@@ -25,6 +26,7 @@ authrouter
     checkConfirmationCode
   )
   .post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword)
-  .put("/update-password", validateBody(signinSchema), updatePassword);
+  .put("/update-password", validateBody(signinSchema), updatePassword)
+  .get("/user", authMiddleware, getUserInfo);
 
 export { authrouter };
