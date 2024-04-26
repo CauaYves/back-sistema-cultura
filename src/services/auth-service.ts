@@ -21,6 +21,15 @@ import { dateFunctions, exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+async function getUserById(userId: number) {
+  const user = await userRepository.findOneById(userId, {
+    name: true,
+    cpf: true,
+    email: true,
+  });
+  return user;
+}
+
 async function create(body: User) {
   const existentUserWithEmail = await userRepository.findOneByEmail(body.email);
   if (existentUserWithEmail) throw conflictError("email já cadastrado.");
@@ -178,6 +187,7 @@ interface UpdatePasswordType extends SignInParams {
   code: string;
 }
 const authService = {
+  getUserById,
   confirmRegistration,
   create,
   signIn,
