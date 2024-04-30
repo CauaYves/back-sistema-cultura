@@ -50,34 +50,29 @@ model UserConfirmationCode {
 }
 
 model CulturalAgent {
-  id                     Int      @id @default(autoincrement())
-  email                  String
-  codename               String
-  mothername             String
-  borndate               String
-  nacionality            String
-  naturalness            String
-  rg                     String
-  issuingbody            String
-  uf                     String
-  gender                 String
-  race                   String
-  student                Boolean
-  education              String
-  extracurricularCourses String
-  superiorCourses        String
-  deficiency             Boolean
-  address                String
-  houseNumber            String
-  complement             String
-  cep                    String
-  public                 Boolean
-  fileId                 String   @unique
-  File                   File?    @relation(fields: [fileId], references: [id])
-  userId                 Int      @unique
-  User                   User     @relation(fields: [userId], references: [id])
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  alternativeTel String
+  cep            String
+  complement     String
+  county         String
+  cpf            String
+  cultura        Boolean
+  email          String
+  houseNumber    String
+  name           String
+  neighboorhood  String
+  phone          String
+  proponent      String
+  public         Boolean
+  publicPlace    String
+  tel            String
+  uf             String
+  fileId         String   @unique
+  File           File?    @relation(fields: [fileId], references: [id])
+  userId         Int      @unique
+  User           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model File {
