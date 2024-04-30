@@ -6,26 +6,21 @@ export type User = {
 };
 
 export type CulturalUser = {
-  address: string;
-  borndate: string;
+  alternativeTel: string;
   cep: string;
-  codename: string;
   complement: string;
-  deficiency: boolean;
-  education: string;
+  county: string;
+  cpf: string;
+  cultura: boolean;
   email: string;
-  extracurricularCourses: string;
-  gender: string;
   houseNumber: string;
-  issuingbody: string;
-  mothername: string;
-  nacionality: string;
-  naturalness: string;
+  name: string;
+  neighboorhood: string;
+  phone: string;
+  proponent: string;
   public: boolean;
-  race: string;
-  rg: string;
-  student: boolean;
-  superiorCourses: string;
+  publicPlace: string;
+  tel: string;
   uf: string;
 };
 
