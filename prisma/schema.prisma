@@ -23,11 +23,12 @@ model User {
   SessionId            Int?
   Sessions             Session?
   UserConfirmationCode UserConfirmationCode?
-  CulturalAgent        CulturalAgent?
+  CulturalAgent        CulturalAgentPF?
   Contact              Contact[]
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
   CulturalCollective   CulturalCollective[]
+  CulturalAgentPJ      CulturalAgentPJ?
 }
 
 model Session {
@@ -49,14 +50,14 @@ model UserConfirmationCode {
   updatedAt DateTime @updatedAt
 }
 
-model CulturalAgent {
+model CulturalAgentPF {
   id             Int      @id @default(autoincrement())
   alternativeTel String
   cep            String
   complement     String
   county         String
   cpf            String
-  cultura        Boolean
+  programs       String[]
   email          String
   houseNumber    String
   name           String
@@ -67,21 +68,64 @@ model CulturalAgent {
   publicPlace    String
   tel            String
   uf             String
-  fileId         String   @unique
-  File           File?    @relation(fields: [fileId], references: [id])
-  userId         Int      @unique
-  User           User     @relation(fields: [userId], references: [id])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+
+  fileId    String   @unique
+  File      FilePF?  @relation(fields: [fileId], references: [id])
+  userId    Int      @unique
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model File {
-  id            String         @id @default(cuid())
-  name          String
-  key           String
-  contentType   String
-  CulturalAgent CulturalAgent?
-  createdAt     DateTime       @default(now())
+model FilePF {
+  id                String           @id @default(cuid())
+  name              String
+  key               String
+  contentType       String
+  culturalAgentPFId Int?
+  CulturalAgentPF   CulturalAgentPF?
+  createdAt         DateTime         @default(now())
+}
+
+model CulturalAgentPJ {
+  id             Int      @id @default(autoincrement())
+  alternativeTel String
+  cep            String
+  cnpj           String
+  complement     String
+  county         String
+  programs       String[]
+  email          String
+  fantasyName    String
+  houseNumber    String
+  job            String
+  neighboorhood  String
+  phone          String
+  proponent      String
+  public         Boolean
+  publicPlace    String
+  responsible    String
+  socialReason   String
+  tel            String
+  uf             String
+  website        String
+
+  fileId    String   @unique
+  File      FilePJ?  @relation(fields: [fileId], references: [id])
+  userId    Int      @unique
+  User      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FilePJ {
+  id                String           @id @default(cuid())
+  name              String
+  key               String
+  contentType       String
+  culturalAgentPJId Int?
+  CulturalAgentPJ   CulturalAgentPJ?
+  createdAt         DateTime         @default(now())
 }
 
 model Contact {

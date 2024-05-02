@@ -3,7 +3,7 @@ import {
   getUserInfo,
   checkConfirmationCode,
   createUser,
-  singIn,
+  signIn,
   forgotPassword,
   updatePassword,
 } from "@/controllers";
@@ -19,7 +19,7 @@ const authrouter = Router();
 
 authrouter
   .post("/sign-up", validateBody(signupSchema), createUser)
-  .post("/sign-in", validateBody(signinSchema), singIn)
+  .post("/sign-in", validateBody(signinSchema), signIn)
   .post(
     "/confirm-registration",
     validateQuery(checkConfirmationCodeSchema),

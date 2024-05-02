@@ -12,11 +12,12 @@ Table User {
   SessionId Int
   Sessions Session
   UserConfirmationCode UserConfirmationCode
-  CulturalAgent CulturalAgent
+  CulturalAgent CulturalAgentPF
   Contact Contact [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   CulturalCollective CulturalCollective [not null]
+  CulturalAgentPJ CulturalAgentPJ
 }
 
 Table Session {
@@ -38,14 +39,14 @@ Table UserConfirmationCode {
   updatedAt DateTime [not null]
 }
 
-Table CulturalAgent {
+Table CulturalAgentPF {
   id Int [pk, increment]
   alternativeTel String [not null]
   cep String [not null]
   complement String [not null]
   county String [not null]
   cpf String [not null]
-  cultura Boolean [not null]
+  programs String[] [not null]
   email String [not null]
   houseNumber String [not null]
   name String [not null]
@@ -57,19 +58,60 @@ Table CulturalAgent {
   tel String [not null]
   uf String [not null]
   fileId String [unique, not null]
-  File File
+  File FilePF
   userId Int [unique, not null]
   User User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
 
-Table File {
+Table FilePF {
   id String [pk]
   name String [not null]
   key String [not null]
   contentType String [not null]
-  CulturalAgent CulturalAgent
+  culturalAgentPFId Int
+  CulturalAgentPF CulturalAgentPF
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table CulturalAgentPJ {
+  id Int [pk, increment]
+  alternativeTel String [not null]
+  cep String [not null]
+  cnpj String [not null]
+  complement String [not null]
+  county String [not null]
+  programs String[] [not null]
+  email String [not null]
+  fantasyName String [not null]
+  houseNumber String [not null]
+  job String [not null]
+  neighboorhood String [not null]
+  phone String [not null]
+  proponent String [not null]
+  public Boolean [not null]
+  publicPlace String [not null]
+  responsible String [not null]
+  socialReason String [not null]
+  tel String [not null]
+  uf String [not null]
+  website String [not null]
+  fileId String [unique, not null]
+  File FilePJ
+  userId Int [unique, not null]
+  User User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table FilePJ {
+  id String [pk]
+  name String [not null]
+  key String [not null]
+  contentType String [not null]
+  culturalAgentPJId Int
+  CulturalAgentPJ CulturalAgentPJ
   createdAt DateTime [default: `now()`, not null]
 }
 
@@ -107,9 +149,13 @@ Ref: Session.userId - User.id
 
 Ref: UserConfirmationCode.userId - User.id
 
-Ref: CulturalAgent.fileId - File.id
+Ref: CulturalAgentPF.fileId - FilePF.id
 
-Ref: CulturalAgent.userId - User.id
+Ref: CulturalAgentPF.userId - User.id
+
+Ref: CulturalAgentPJ.fileId - FilePJ.id
+
+Ref: CulturalAgentPJ.userId - User.id
 
 Ref: Contact.userId > User.id
 

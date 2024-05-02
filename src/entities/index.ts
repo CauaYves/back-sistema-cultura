@@ -5,13 +5,36 @@ export type User = {
   password: string;
 };
 
-export type CulturalUser = {
+export type CulturalUserPJ = {
+  alternativeTel: string;
+  cep: string;
+  cnpj: string;
+  complement: string;
+  county: string;
+  cultura: string[];
+  email: string;
+  fantasyName: string;
+  houseNumber: string;
+  job: string;
+  neighboorhood: string;
+  name: string;
+  phone: string;
+  proponent: string;
+  public: boolean;
+  publicPlace: string;
+  responsible: string;
+  socialReason: string;
+  tel: string;
+  uf: string;
+  website: string;
+};
+export type CulturalUserPF = {
   alternativeTel: string;
   cep: string;
   complement: string;
   county: string;
   cpf: string;
-  cultura: boolean;
+  cultura: string[];
   email: string;
   houseNumber: string;
   name: string;

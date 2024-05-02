@@ -27,7 +27,7 @@ async function createUser(req: Request, res: Response) {
   }
 }
 
-async function singIn(req: Request, res: Response) {
+async function signIn(req: Request, res: Response) {
   try {
     const { body } = req;
     const user = await authService.signIn(body);
@@ -87,7 +87,7 @@ async function updatePassword(req: Request, res: Response) {
 export {
   getUserInfo,
   createUser,
-  singIn,
+  signIn,
   checkConfirmationCode,
   forgotPassword,
   updatePassword,

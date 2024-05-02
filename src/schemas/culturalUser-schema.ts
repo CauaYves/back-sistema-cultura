@@ -5,7 +5,7 @@ const uploadBodySchema = Zod.object({
   contentType: Zod.string().regex(/\w+\/[-=.\w]+/),
 });
 
-const enrollmentSchema = Zod.object({
+const enrollmentSchemaPf = Zod.object({
   alternativeTel: Zod.string().max(15),
   cep: Zod.string().regex(/^\d{5}-\d{3}$/),
   complement: Zod.string(),
@@ -14,7 +14,7 @@ const enrollmentSchema = Zod.object({
     /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
     "insira um cpf válido. "
   ),
-  cultura: Zod.boolean(),
+  programs: Zod.array(Zod.string()),
   email: Zod.string().email("insira um email válido. "),
   houseNumber: Zod.string(),
   name: Zod.string(),
@@ -28,4 +28,28 @@ const enrollmentSchema = Zod.object({
   upload: uploadBodySchema,
 });
 
-export { enrollmentSchema, uploadBodySchema };
+const enrollmentSchemaPj = Zod.object({
+  alternativeTel: Zod.string().max(15),
+  cep: Zod.string().regex(/^\d{5}-\d{3}$/),
+  cnpj: Zod.string(),
+  complement: Zod.string(),
+  county: Zod.string(),
+  programs: Zod.array(Zod.string()),
+  email: Zod.string().email("insira um email válido. "),
+  fantasyName: Zod.string(),
+  houseNumber: Zod.string(),
+  job: Zod.string(),
+  neighboorhood: Zod.string(),
+  phone: Zod.string(),
+  proponent: Zod.string(),
+  public: Zod.boolean(),
+  publicPlace: Zod.string(),
+  responsible: Zod.string(),
+  socialReason: Zod.string(),
+  tel: Zod.string(),
+  uf: Zod.string(),
+  upload: uploadBodySchema,
+  website: Zod.string(),
+});
+
+export { enrollmentSchemaPf, uploadBodySchema, enrollmentSchemaPj };

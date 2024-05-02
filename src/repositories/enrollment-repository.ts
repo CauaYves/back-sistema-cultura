@@ -1,8 +1,34 @@
 import { prisma } from "@/config";
-import { CulturalUser, FileInfo } from "@/entities";
+import { CulturalUserPF, CulturalUserPJ, FileInfo } from "@/entities";
 
-async function create(data: CulturalUser, userId: number, fileId: string) {
-  return prisma.culturalAgent.create({
+async function createCulturalAgentPf(
+  data: CulturalUserPF,
+  userId: number,
+  fileId: string
+) {
+  return prisma.culturalAgentPF.create({
+    data: {
+      ...data,
+      User: {
+        connect: {
+          id: userId,
+        },
+      },
+      File: {
+        connect: {
+          id: fileId,
+        },
+      },
+    },
+  });
+}
+
+async function createCulturalAgentPj(
+  data: CulturalUserPJ,
+  userId: number,
+  fileId: string
+) {
+  return prisma.culturalAgentPJ.create({
     data: {
       ...data,
       User: {
@@ -23,22 +49,37 @@ export interface R2File extends FileInfo {
   key: string;
 }
 
-async function createFile(data: R2File) {
-  return prisma.file.create({
+async function createFilePf(data: R2File) {
+  return prisma.filePF.create({
     data: data,
   });
 }
 
-async function getOneById(userId: number) {
-  return prisma.culturalAgent.findUnique({
+async function createFilePj(data: R2File) {
+  return prisma.filePJ.create({
+    data: data,
+  });
+}
+
+async function getUserCulturalPFById(userId: number) {
+  return prisma.culturalAgentPF.findUnique({
+    where: { userId },
+  });
+}
+
+async function getUserCulturalPJById(userId: number) {
+  return prisma.culturalAgentPJ.findUnique({
     where: { userId },
   });
 }
 
 const enrollmentRepository = {
-  create,
-  createFile,
-  getOneById,
+  createFilePf,
+  createFilePj,
+  createCulturalAgentPf,
+  createCulturalAgentPj,
+  getUserCulturalPFById,
+  getUserCulturalPJById,
 };
 
 export { enrollmentRepository };
