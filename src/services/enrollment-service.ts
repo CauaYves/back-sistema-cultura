@@ -89,8 +89,32 @@ async function checkIfAlreadyHaveUserPF(userId: number) {
   }
 }
 
+async function getPF(userId: number) {
+  const userPF = await enrollmentRepository.getUserCulturalPFById(userId);
+  if (!userPF) throw notFoundError();
+  delete userPF.fileId;
+  delete userPF.id;
+  delete userPF.userId;
+  delete userPF.createdAt;
+  delete userPF.updatedAt;
+  return userPF;
+}
+
+async function getPJ(userId: number) {
+  const userPJ = await enrollmentRepository.getUserCulturalPJById(userId);
+  if (!userPJ) throw notFoundError();
+  delete userPJ.fileId;
+  delete userPJ.id;
+  delete userPJ.userId;
+  delete userPJ.createdAt;
+  delete userPJ.updatedAt;
+  return userPJ;
+}
+
 const enrollmentService = {
   saveUserPj,
   saveUserPf,
+  getPF,
+  getPJ,
 };
 export { enrollmentService };

@@ -114,7 +114,7 @@ async function sendConfirmationEmail(
 ) {
   const code = await generateVerificationCode(userId);
 
-  const subject = "Confirme seu cadastro na Culturalize";
+  const subject = `Olá ${name}, Confirme seu cadastro na Culturalize`;
   await userConfirmationCodeRepository.create(code, userId);
   const text = generateHtml(email, code, confirmRegisterTexts);
 
