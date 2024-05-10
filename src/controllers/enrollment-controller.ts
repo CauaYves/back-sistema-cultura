@@ -45,9 +45,35 @@ async function createPF(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function getPF(req: AuthenticatedRequest, res: Response) {
+  try {
+    const userId = req.userId;
+    const response = await enrollmentService.getPF(userId);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    if (error.name === "NotFoundError")
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
+async function getPJ(req: AuthenticatedRequest, res: Response) {
+  try {
+    const userId = req.userId;
+    const response = await enrollmentService.getPJ(userId);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    if (error.name === "NotFoundError")
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const enrollmentController = {
   createPF,
   createPJ,
+  getPF,
+  getPJ,
 };
 
 export default enrollmentController;

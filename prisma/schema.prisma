@@ -158,11 +158,11 @@ model CulturalCollective {
   updatedAt     DateTime @updatedAt
 }
 
-// model Project {
+// model Notice {
 //   id           Int       @id @default(autoincrement())
 //   title        String
 //   observations String
-//   lines        String[]
+//   city         String
 //   openingDate  DateTime
 //   endDate      DateTime?
 //   createdAt    DateTime  @default(now())
