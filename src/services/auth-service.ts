@@ -79,8 +79,7 @@ async function getUserOrFail(email: string) {
 
 async function validatePasswordOrFail(password: string, userPassword: string) {
   const isPasswordValid = await bcrypt.compare(password, userPassword);
-  if (!isPasswordValid)
-    throw UnprocessableEntityError("email ou senha incorretos");
+  if (!isPasswordValid) throw UnprocessableEntityError("dados incorretos! ");
 }
 
 async function createOrUpdateSession(userId: number) {
@@ -183,6 +182,17 @@ async function updatePassword(body: UpdatePasswordType) {
   await userConfirmationCodeRepository.updateVerificationCode(user.id, true);
 }
 
+async function updateUserRegistrartion(body: User, userId: number) {
+  const user = await getUserOrFail(body.email);
+  if (!user.emailConfirmed)
+    throw forbiddenError("confirme seu email antes de prosseguir");
+
+  await validatePasswordOrFail(body.password, user.password);
+  const hashedPassword = await bcrypt.hash(body.password, 12);
+  body.password = hashedPassword;
+  await userRepository.update(userId, body);
+}
+
 export type SignInParams = Pick<User, "email" | "password">;
 interface UpdatePasswordType extends SignInParams {
   code: string;
@@ -194,5 +204,6 @@ const authService = {
   signIn,
   recoverPassword,
   updatePassword,
+  updateUserRegistrartion,
 };
 export { authService };

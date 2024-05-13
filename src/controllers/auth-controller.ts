@@ -84,6 +84,23 @@ async function updatePassword(req: Request, res: Response) {
   }
 }
 
+async function updatedUserData(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const { body } = req;
+    await authService.updateUserRegistrartion(body, userId);
+    return res
+      .status(httpStatus.CREATED)
+      .send("Cadastro alterado com sucesso! ");
+  } catch (error) {
+    if (error.name === "ConflictError")
+      return res.status(httpStatus.CONFLICT).send(error.message);
+    if (error.name === "UnprocessableEntityError")
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 export {
   getUserInfo,
   createUser,
@@ -91,4 +108,5 @@ export {
   checkConfirmationCode,
   forgotPassword,
   updatePassword,
+  updatedUserData,
 };

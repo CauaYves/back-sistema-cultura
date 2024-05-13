@@ -6,6 +6,7 @@ import {
   signIn,
   forgotPassword,
   updatePassword,
+  updatedUserData,
 } from "@/controllers";
 import { authMiddleware, validateBody, validateQuery } from "@/middlewares";
 import {
@@ -27,6 +28,7 @@ authrouter
   )
   .post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword)
   .put("/update-password", validateBody(signinSchema), updatePassword)
-  .get("/user", authMiddleware, getUserInfo);
+  .get("/user", authMiddleware, getUserInfo)
+  .put("/", authMiddleware, validateBody(signupSchema), updatedUserData);
 
 export { authrouter };
