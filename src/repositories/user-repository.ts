@@ -65,6 +65,13 @@ async function updatePassword(userId: number, password: string) {
   });
 }
 
+async function update(userId: number, data: User) {
+  return prisma.user.update({
+    where: { id: userId },
+    data,
+  });
+}
+
 const userRepository = {
   confirmRegistry,
   findOneById,
@@ -72,6 +79,7 @@ const userRepository = {
   create,
   findOneByCpf,
   updatePassword,
+  update,
 };
 
 export { userRepository };
