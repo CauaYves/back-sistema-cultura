@@ -1,12 +1,40 @@
 import { NoticePreview } from "@/entities";
-import { UnprocessableEntityError } from "@/errors";
-import dayjs from "dayjs";
+import { UnprocessableEntityError, conflictError } from "@/errors";
+import { noticePreviewRepository } from "@/repositories";
 
-async function create(userId: number, noticePreview: NoticePreview) {
+async function create(noticePreview: NoticePreview) {
   checkIfOpeningDateIsLowerThanEndingDate(
     noticePreview.openingDate,
     noticePreview.endDate
   );
+  await checkIfAlreadyHaveNoticeWithThisName(noticePreview.name);
+
+  const openingDate = new Date(noticePreview.openingDate);
+  const endDate = new Date(noticePreview.endDate);
+
+  if (isNaN(openingDate.getTime()) || isNaN(endDate.getTime())) {
+    throw UnprocessableEntityError("Insira as datas em formato válido! ");
+  }
+
+  noticePreview.openingDate = openingDate.toISOString();
+  noticePreview.endDate = endDate.toISOString();
+
+  await noticePreviewRepository.create(noticePreview);
+}
+
+async function checkIfAlreadyHaveNoticeWithThisName(noticePreviewName: string) {
+  const search = await noticePreviewRepository.getByName(noticePreviewName);
+  if (search) {
+    throw conflictError("Já existe um edital com esse nome! ");
+  }
+  return;
+}
+
+async function getManyByName(cityName: string) {
+  const noticePreviewList = await noticePreviewRepository.getManyByCityName(
+    cityName
+  );
+  return noticePreviewList;
 }
 
 function checkIfOpeningDateIsLowerThanEndingDate(
@@ -22,6 +50,12 @@ function checkIfOpeningDateIsLowerThanEndingDate(
   }
 }
 
+async function deleteById(id: number) {
+  const deletedNotice = await noticePreviewRepository.deleteById(id);
+}
+
 export const noticePreviewService = {
   create,
+  deleteById,
+  getManyByName,
 };

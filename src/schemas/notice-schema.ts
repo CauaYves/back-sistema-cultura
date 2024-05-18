@@ -1,9 +1,5 @@
 import { string, z } from "zod";
 
-const countySchema = z.object({
-  county: z.string(),
-});
-
 const noticeCreationSchema = z.object({
   proposal: z.object({
     name: z.string(),
@@ -24,4 +20,4 @@ const noticeCreationSchema = z.object({
   }),
 });
 
-export { countySchema, noticeCreationSchema };
+export { noticeCreationSchema };
