@@ -73,3 +73,30 @@ export type Collective = {
   responsible: string;
   userId: number;
 };
+
+export type NoticeProposal = {
+  name: string;
+  description: string;
+  justification: string;
+  attachments: string;
+  accessibility: string;
+  accessDemocratization: string;
+  executionPlace: string;
+  publicServed: string;
+};
+
+export type NoticeConnections = {
+  culturalAgentPFId: string;
+  culturalAgentPJId: string;
+  noticePreviewId: string;
+  responsibleId: string;
+  projectCoordinatorId: string;
+};
+
+export type NoticePreview = {
+  name: string;
+  observations: string;
+  city: string;
+  openingDate: string;
+  endDate: string;
+};

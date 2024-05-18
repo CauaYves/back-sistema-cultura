@@ -25,10 +25,10 @@ model User {
   UserConfirmationCode UserConfirmationCode?
   CulturalAgent        CulturalAgentPF?
   Contact              Contact[]
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @updatedAt
   CulturalCollective   CulturalCollective[]
   CulturalAgentPJ      CulturalAgentPJ?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
 }
 
 model Session {
@@ -68,13 +68,13 @@ model CulturalAgentPF {
   publicPlace    String
   tel            String
   uf             String
-
-  fileId    String   @unique
-  File      FilePF?  @relation(fields: [fileId], references: [id])
-  userId    Int      @unique
-  User      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  fileId         String   @unique
+  File           FilePF?  @relation(fields: [fileId], references: [id])
+  userId         Int      @unique
+  User           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  Notice         Notice[]
 }
 
 model FilePF {
@@ -88,7 +88,7 @@ model FilePF {
 }
 
 model CulturalAgentPJ {
-  id             Int      @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   alternativeTel String
   cep            String
   cnpj           String
@@ -109,13 +109,14 @@ model CulturalAgentPJ {
   tel            String
   uf             String
   website        String
-
-  fileId    String   @unique
-  File      FilePJ?  @relation(fields: [fileId], references: [id])
-  userId    Int      @unique
-  User      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  fileId         String        @unique
+  File           FilePJ?       @relation(fields: [fileId], references: [id])
+  userId         Int           @unique
+  User           User          @relation(fields: [userId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  Notice         Notice[]
+  NoticeFiles    NoticeFiles[]
 }
 
 model FilePJ {
@@ -158,13 +159,95 @@ model CulturalCollective {
   updatedAt     DateTime @updatedAt
 }
 
-// model Notice {
-//   id           Int       @id @default(autoincrement())
-//   title        String
-//   observations String
-//   city         String
-//   openingDate  DateTime
-//   endDate      DateTime?
-//   createdAt    DateTime  @default(now())
-//   updatedAt    DateTime  @updatedAt
-// }
+model NoticePreview {
+  id           Int      @id @default(autoincrement())
+  name         String
+  observations String
+  city         String
+  openingDate  DateTime
+  endDate      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Notice       Notice?
+}
+
+model Notice {
+  id                    Int                @id @default(autoincrement())
+  name                  String             @default("name")
+  description           String             @default("description")
+  justification         String             @default("justification")
+  executionPlace        String             @default("executionPlace")
+  publicServed          String             @default("publicServed")
+  accessDemocratization String             @default("accessDemocratization")
+  accessibility         String             @default("acessibilidade")
+  attachments           String[]
+  noticeFiles           NoticeFiles[]
+  culturalAgentPFId     Int?               @unique
+  CulturalAgentPF       CulturalAgentPF?   @relation(fields: [culturalAgentPFId], references: [id])
+  culturalAgentPJId     Int?               @unique
+  CulturalAgentPJ       CulturalAgentPJ?   @relation(fields: [culturalAgentPJId], references: [id])
+  noticePreviewId       Int                @unique
+  NoticePreview         NoticePreview      @relation(fields: [noticePreviewId], references: [id])
+  responsibleId         Int                @unique
+  Responsible           Responsible        @relation(fields: [responsibleId], references: [id])
+  projectCoordinatorId  Int                @unique
+  ProjectCoordinator    ProjectCoordinator @relation(fields: [projectCoordinatorId], references: [id])
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+}
+
+model Responsible {
+  id                     Int      @id @default(autoincrement())
+  name                   String
+  cpf                    String
+  rg                     String
+  issuingBody            String
+  email                  String
+  tel                    String
+  cep                    String
+  address                String
+  number                 String
+  complement             String
+  neighboorHood          String
+  county                 String
+  uf                     String
+  activiesOnLastTwoYears String
+  noticeId               Int?     @unique
+  Notice                 Notice?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model ProjectCoordinator {
+  id                     Int      @id @default(autoincrement())
+  name                   String
+  cpf                    String
+  rg                     String
+  issuingBody            String
+  email                  String
+  tel                    String
+  cep                    String
+  address                String
+  number                 String
+  complement             String
+  neighboorHood          String
+  county                 String
+  uf                     String
+  activiesOnLastTwoYears String
+  noticeId               Int?     @unique
+  Notice                 Notice?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model NoticeFiles {
+  id                Int              @id @default(autoincrement())
+  noticeId          Int              @unique
+  Notice            Notice           @relation(fields: [noticeId], references: [id])
+  name              String
+  key               String
+  contentType       String
+  culturalAgentPJId Int?
+  CulturalAgentPJ   CulturalAgentPJ? @relation(fields: [culturalAgentPJId], references: [id])
+  createdAt         DateTime         @default(now())
+}

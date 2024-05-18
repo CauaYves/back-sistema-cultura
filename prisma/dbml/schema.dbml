@@ -14,10 +14,10 @@ Table User {
   UserConfirmationCode UserConfirmationCode
   CulturalAgent CulturalAgentPF
   Contact Contact [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
   CulturalCollective CulturalCollective [not null]
   CulturalAgentPJ CulturalAgentPJ
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table Session {
@@ -63,6 +63,7 @@ Table CulturalAgentPF {
   User User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  Notice Notice [not null]
 }
 
 Table FilePF {
@@ -103,6 +104,8 @@ Table CulturalAgentPJ {
   User User [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  Notice Notice [not null]
+  NoticeFiles NoticeFiles [not null]
 }
 
 Table FilePJ {
@@ -145,6 +148,99 @@ Table CulturalCollective {
   updatedAt DateTime [not null]
 }
 
+Table NoticePreview {
+  id Int [pk, increment]
+  name String [not null]
+  observations String [not null]
+  city String [not null]
+  openingDate DateTime [not null]
+  endDate DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  Notice Notice
+}
+
+Table Notice {
+  id Int [pk, increment]
+  name String [not null, default: 'name']
+  description String [not null, default: 'description']
+  justification String [not null, default: 'justification']
+  executionPlace String [not null, default: 'executionPlace']
+  publicServed String [not null, default: 'publicServed']
+  accessDemocratization String [not null, default: 'accessDemocratization']
+  accessibility String [not null, default: 'acessibilidade']
+  attachments String[] [not null]
+  noticeFiles NoticeFiles [not null]
+  culturalAgentPFId Int [unique]
+  CulturalAgentPF CulturalAgentPF
+  culturalAgentPJId Int [unique]
+  CulturalAgentPJ CulturalAgentPJ
+  noticePreviewId Int [unique, not null]
+  NoticePreview NoticePreview [not null]
+  responsibleId Int [unique, not null]
+  Responsible Responsible [not null]
+  projectCoordinatorId Int [unique, not null]
+  ProjectCoordinator ProjectCoordinator [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Responsible {
+  id Int [pk, increment]
+  name String [not null]
+  cpf String [not null]
+  rg String [not null]
+  issuingBody String [not null]
+  email String [not null]
+  tel String [not null]
+  cep String [not null]
+  address String [not null]
+  number String [not null]
+  complement String [not null]
+  neighboorHood String [not null]
+  county String [not null]
+  uf String [not null]
+  activiesOnLastTwoYears String [not null]
+  noticeId Int [unique]
+  Notice Notice
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ProjectCoordinator {
+  id Int [pk, increment]
+  name String [not null]
+  cpf String [not null]
+  rg String [not null]
+  issuingBody String [not null]
+  email String [not null]
+  tel String [not null]
+  cep String [not null]
+  address String [not null]
+  number String [not null]
+  complement String [not null]
+  neighboorHood String [not null]
+  county String [not null]
+  uf String [not null]
+  activiesOnLastTwoYears String [not null]
+  noticeId Int [unique]
+  Notice Notice
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table NoticeFiles {
+  id Int [pk, increment]
+  noticeId Int [unique, not null]
+  Notice Notice [not null]
+  name String [not null]
+  key String [not null]
+  contentType String [not null]
+  culturalAgentPJId Int
+  CulturalAgentPJ CulturalAgentPJ
+  createdAt DateTime [default: `now()`, not null]
+}
+
 Ref: Session.userId - User.id
 
 Ref: UserConfirmationCode.userId - User.id
@@ -160,3 +256,17 @@ Ref: CulturalAgentPJ.userId - User.id
 Ref: Contact.userId > User.id
 
 Ref: CulturalCollective.userId > User.id
+
+Ref: Notice.culturalAgentPFId > CulturalAgentPF.id
+
+Ref: Notice.culturalAgentPJId > CulturalAgentPJ.id
+
+Ref: Notice.noticePreviewId - NoticePreview.id
+
+Ref: Notice.responsibleId - Responsible.id
+
+Ref: Notice.projectCoordinatorId - ProjectCoordinator.id
+
+Ref: NoticeFiles.noticeId > Notice.id
+
+Ref: NoticeFiles.culturalAgentPJId > CulturalAgentPJ.id

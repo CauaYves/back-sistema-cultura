@@ -7,6 +7,9 @@ import {
   enrollmentsRouter,
   contactRouter,
   collectiveRouter,
+  noticeRouter,
+  noticePreviewRouter,
+  ibgeRouter,
 } from "@/routers";
 import { handleApplicationErrors } from "@/middlewares";
 
@@ -21,6 +24,9 @@ app
   .use("/enrollment", enrollmentsRouter)
   .use("/contact", contactRouter)
   .use("/collective", collectiveRouter)
+  .use("/notice", noticeRouter)
+  .use("/noticePreview", noticePreviewRouter)
+  .use("/ibge", ibgeRouter)
   .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {
