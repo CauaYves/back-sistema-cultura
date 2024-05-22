@@ -78,7 +78,7 @@ export type NoticeProposal = {
   name: string;
   description: string;
   justification: string;
-  attachments: string;
+  attachments: FileInfo[];
   accessibility: string;
   accessDemocratization: string;
   executionPlace: string;
@@ -89,8 +89,6 @@ export type NoticeConnections = {
   culturalAgentPFId: string;
   culturalAgentPJId: string;
   noticePreviewId: string;
-  responsibleId: string;
-  projectCoordinatorId: string;
 };
 
 export type NoticePreview = {
@@ -100,3 +98,31 @@ export type NoticePreview = {
   openingDate: string;
   endDate: string;
 };
+
+export type FisicPerson = {
+  name: string;
+  cpf: string;
+  rg: string;
+  issuingBody: string;
+  email: string;
+  tel: string;
+  cep: string;
+  address: string;
+  number: string;
+  complement: string;
+  neighboorHood: string;
+  county: string;
+  uf: string;
+  activiesOnLastTwoYears: string;
+};
+
+export interface Proposal {
+  attachments: string[];
+  name: string;
+  description: string;
+  justification: string;
+  accessibility: string;
+  accessDemocratization: string;
+  executionPlace: string;
+  publicServed: string;
+}

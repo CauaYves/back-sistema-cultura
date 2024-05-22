@@ -18,14 +18,14 @@ export interface CulturalModelPF extends CulturalUserPF {
   fileId: string;
 }
 
-async function generateSignedUrl(fileInfo: FileInfo) {
+async function generateSignedUrl(fileInfo: FileInfo, bucketName: string) {
   const { name } = fileInfo;
   const fileKey = randomUUID().concat("-").concat(name);
   const URLexpirationTime = 600;
   const signedUrl = await getSignedUrl(
     r2,
     new PutObjectCommand({
-      Bucket: env.CLOUDFLARE_BUCKET_NAME,
+      Bucket: bucketName,
       Key: fileKey,
     }),
     { expiresIn: URLexpirationTime }
@@ -43,7 +43,10 @@ async function saveUserPj(
   userId: number
 ) {
   await checkIfAlreadyHaveUserPJ(userId);
-  const { r2File, signedUrl } = await generateSignedUrl(fileInfo);
+  const { r2File, signedUrl } = await generateSignedUrl(
+    fileInfo,
+    "cadastros_pj"
+  );
   const file = await enrollmentRepository.createFilePj(r2File);
 
   await enrollmentRepository.createCulturalAgentPj(
@@ -69,7 +72,10 @@ async function saveUserPf(
   userId: number
 ) {
   await checkIfAlreadyHaveUserPF(userId);
-  const { r2File, signedUrl } = await generateSignedUrl(fileInfo);
+  const { r2File, signedUrl } = await generateSignedUrl(
+    fileInfo,
+    "cadastros_pf"
+  );
   const file = await enrollmentRepository.createFilePf(r2File);
 
   await enrollmentRepository.createCulturalAgentPf(
@@ -116,5 +122,6 @@ const enrollmentService = {
   saveUserPf,
   getPF,
   getPJ,
+  generateSignedUrl,
 };
 export { enrollmentService };

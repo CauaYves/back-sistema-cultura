@@ -51,7 +51,7 @@ model UserConfirmationCode {
 }
 
 model CulturalAgentPF {
-  id             Int      @id @default(autoincrement())
+  id             Int           @id @default(autoincrement())
   alternativeTel String
   cep            String
   complement     String
@@ -68,13 +68,14 @@ model CulturalAgentPF {
   publicPlace    String
   tel            String
   uf             String
-  fileId         String   @unique
-  File           FilePF?  @relation(fields: [fileId], references: [id])
-  userId         Int      @unique
-  User           User     @relation(fields: [userId], references: [id])
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  fileId         String        @unique
+  File           FilePF?       @relation(fields: [fileId], references: [id])
+  userId         Int           @unique
+  User           User          @relation(fields: [userId], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
   Notice         Notice[]
+  NoticeFiles    NoticeFiles[]
 }
 
 model FilePF {
@@ -180,7 +181,6 @@ model Notice {
   publicServed          String             @default("publicServed")
   accessDemocratization String             @default("accessDemocratization")
   accessibility         String             @default("acessibilidade")
-  attachments           String[]
   noticeFiles           NoticeFiles[]
   culturalAgentPFId     Int?               @unique
   CulturalAgentPF       CulturalAgentPF?   @relation(fields: [culturalAgentPFId], references: [id])
@@ -212,10 +212,9 @@ model Responsible {
   county                 String
   uf                     String
   activiesOnLastTwoYears String
-  noticeId               Int?     @unique
-  Notice                 Notice?
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  Notice                 Notice?
 }
 
 model ProjectCoordinator {
@@ -234,20 +233,21 @@ model ProjectCoordinator {
   county                 String
   uf                     String
   activiesOnLastTwoYears String
-  noticeId               Int?     @unique
-  Notice                 Notice?
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+  Notice                 Notice?
 }
 
 model NoticeFiles {
   id                Int              @id @default(autoincrement())
-  noticeId          Int              @unique
-  Notice            Notice           @relation(fields: [noticeId], references: [id])
   name              String
   key               String
   contentType       String
+  culturalAgentPFId Int?
+  CulturalAgentPF   CulturalAgentPF? @relation(fields: [culturalAgentPFId], references: [id])
   culturalAgentPJId Int?
   CulturalAgentPJ   CulturalAgentPJ? @relation(fields: [culturalAgentPJId], references: [id])
   createdAt         DateTime         @default(now())
+  Notice            Notice           @relation(fields: [noticeId], references: [id])
+  noticeId          Int
 }
