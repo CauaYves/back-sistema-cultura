@@ -17,9 +17,7 @@ const app = express();
 app
   .use(cors())
   .use(express.json())
-  .get("/health", (_req, res) =>
-    res.send("Status da aplicação: ✅ Em execução")
-  )
+  .get("/health", (_req, res) => res.send("Status da aplicação: ✅ Em execução"))
   .use("/auth", authrouter)
   .use("/enrollment", enrollmentsRouter)
   .use("/contact", contactRouter)

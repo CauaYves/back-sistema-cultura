@@ -2,10 +2,7 @@ import Zod from "zod";
 
 const signupSchema = Zod.object({
   name: Zod.string(),
-  cpf: Zod.string().regex(
-    /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-    "insira um cpf válido. "
-  ),
+  cpf: Zod.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
   email: Zod.string()
     .email()
     .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
@@ -31,9 +28,4 @@ const forgotPasswordSchema = Zod.object({
     .regex(/@gmail\.com$/, "O email deve ser do domínio @gmail.com"),
 });
 
-export {
-  signupSchema,
-  signinSchema,
-  checkConfirmationCodeSchema,
-  forgotPasswordSchema,
-};
+export { signupSchema, signinSchema, checkConfirmationCodeSchema, forgotPasswordSchema };

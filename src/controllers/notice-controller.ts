@@ -16,15 +16,12 @@ async function create(req: AuthenticatedRequest, res: Response) {
   try {
     const { userId } = req;
     const { proposal, connections, responsible, coordinator } = req.body;
-    const response = await noticeService.create(
-      userId,
-      proposal,
-      connections,
-      responsible,
-      coordinator
-    );
+    const response = await noticeService.create(userId, proposal, connections, responsible, coordinator);
     return res.status(httpStatus.OK).send(response);
   } catch (error) {
+    if (error.name === "ConflictError") {
+      return res.status(httpStatus.CONFLICT).send(error.message);
+    }
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }

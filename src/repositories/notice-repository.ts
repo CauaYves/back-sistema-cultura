@@ -1,19 +1,22 @@
 import { prisma } from "@/config";
-import { FisicPerson, NoticeProposal, Proposal } from "@/entities";
+import { FisicPerson, NoticeProposal } from "@/entities";
 import { R2File } from "./enrollment-repository";
+import { Prisma } from "@prisma/client";
 
 async function getAll() {
   return prisma.noticePreview.findMany();
 }
 
-async function createResponsible(data: FisicPerson) {
-  return prisma.responsible.create({
+async function createResponsible(data: FisicPerson, transaction?: Prisma.TransactionClient) {
+  const client = transaction || prisma;
+  return client.responsible.create({
     data,
   });
 }
 
-async function createCoordinator(data: FisicPerson) {
-  return prisma.projectCoordinator.create({
+async function createCoordinator(data: FisicPerson, transaction?: Prisma.TransactionClient) {
+  const client = transaction || prisma;
+  return client.projectCoordinator.create({
     data,
   });
 }
@@ -21,12 +24,14 @@ async function createCoordinator(data: FisicPerson) {
 async function create(
   data: NoticeProposal,
   noticePreviewId: number,
-  projectCoordinatorId: number,
   responsibleId: number,
+  projectCoordinatorId: number,
   culturalAgentPFId?: number,
-  culturalAgentPJId?: number
+  culturalAgentPJId?: number,
+  transaction?: Prisma.TransactionClient,
 ) {
-  const noticeData: any = {
+  const client = transaction || prisma;
+  const noticeData: Prisma.NoticeCreateInput = {
     ...data,
     NoticePreview: {
       connect: {
@@ -61,13 +66,14 @@ async function create(
     };
   }
 
-  return prisma.notice.create({
+  return client.notice.create({
     data: noticeData,
   });
 }
 
-async function createFile(data: R2File, noticeId: number) {
-  return prisma.noticeFiles.create({
+async function createFile(data: R2File, noticeId: number, transaction?: Prisma.TransactionClient) {
+  const client = transaction || prisma;
+  return client.noticeFiles.create({
     data: {
       ...data,
       Notice: {
@@ -81,29 +87,40 @@ async function createFile(data: R2File, noticeId: number) {
 
 async function updateFiles(
   noticeId: number,
+  culturalAgentPFId?: number,
   culturalAgentPJId?: number,
-  culturalAgentPFId?: number
+  transaction?: Prisma.TransactionClient,
 ) {
-  if (!culturalAgentPJId && !culturalAgentPFId) {
+  const client = transaction || prisma;
+
+  if (!culturalAgentPFId && !culturalAgentPJId) {
     throw new Error("Pelo menos um ID de agente cultural deve ser fornecido.");
   }
 
-  const whereClause: any = {
+  const whereClause: Prisma.NoticeFilesUpdateManyArgs["where"] = {
     noticeId: noticeId,
   };
-
-  if (culturalAgentPJId) {
-    whereClause.culturalAgentPJId = culturalAgentPJId;
-  }
 
   if (culturalAgentPFId) {
     whereClause.culturalAgentPFId = culturalAgentPFId;
   }
 
-  return prisma.noticeFiles.updateMany({
+  if (culturalAgentPJId) {
+    whereClause.culturalAgentPJId = culturalAgentPJId;
+  }
+
+  return client.noticeFiles.updateMany({
     where: whereClause,
     data: {
       noticeId,
+    },
+  });
+}
+
+async function getOneByNoticePreviewId(noticePreviewId: number) {
+  return prisma.notice.findFirst({
+    where: {
+      noticePreviewId,
     },
   });
 }
@@ -115,4 +132,5 @@ export const noticeRepository = {
   createCoordinator,
   createFile,
   updateFiles,
+  getOneByNoticePreviewId,
 };

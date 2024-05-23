@@ -2,7 +2,7 @@ import { ibgeService } from "@/services/ibge-service";
 import { Response, Request } from "express";
 import httpStatus from "http-status";
 
-async function getUfs(req: Request, res: Response) {
+async function getUfs(_req: Request, res: Response) {
   try {
     const response = await ibgeService.getUfs();
     return res.status(httpStatus.OK).send(response);

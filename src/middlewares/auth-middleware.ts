@@ -4,11 +4,7 @@ import httpStatus from "http-status";
 import { unauthorizedError } from "@/errors";
 import { env, prisma } from "@/config";
 
-export async function authMiddleware(
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) {
+export async function authMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const authorization = req.header("Authorization");
   if (!authorization) return generateUnauthorizedResponse(res);
 
@@ -28,9 +24,7 @@ export async function authMiddleware(
     req.userId = userId;
     return next();
   } catch (error) {
-    return res
-      .status(httpStatus.UNAUTHORIZED)
-      .send("token de acesso expirado, faça login novamente!");
+    return res.status(httpStatus.UNAUTHORIZED).send("token de acesso expirado, faça login novamente!");
   }
 }
 

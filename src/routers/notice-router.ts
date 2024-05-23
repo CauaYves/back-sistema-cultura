@@ -5,10 +5,6 @@ import { Router } from "express";
 
 const noticeRouter = Router();
 
-noticeRouter.post(
-  "/",
-  validateBody(noticeCreationSchema),
-  noticeController.create
-);
+noticeRouter.post("/", validateBody(noticeCreationSchema), noticeController.create);
 
 export { noticeRouter };

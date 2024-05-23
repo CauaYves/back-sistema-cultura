@@ -9,7 +9,7 @@ const noticeCreationSchema = z.object({
       z.object({
         name: z.string(),
         contentType: z.string(),
-      })
+      }),
     ),
     accessibility: z.string(),
     accessDemocratization: z.string(),
@@ -23,9 +23,7 @@ const noticeCreationSchema = z.object({
   }),
   responsible: z.object({
     name: z.string(),
-    cpf: z
-      .string()
-      .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
+    cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
     rg: z.string(),
     issuingBody: z.string(),
     email: z.string().email("insira um email válido. "),
