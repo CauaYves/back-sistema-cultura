@@ -10,10 +10,7 @@ const enrollmentSchemaPf = Zod.object({
   cep: Zod.string().regex(/^\d{5}-\d{3}$/),
   complement: Zod.string(),
   county: Zod.string(),
-  cpf: Zod.string().regex(
-    /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-    "insira um cpf válido. "
-  ),
+  cpf: Zod.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
   programs: Zod.array(Zod.string()),
   email: Zod.string().email("insira um email válido. "),
   houseNumber: Zod.string(),

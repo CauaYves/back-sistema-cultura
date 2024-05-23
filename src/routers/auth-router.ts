@@ -9,23 +9,14 @@ import {
   updatedUserData,
 } from "@/controllers";
 import { authMiddleware, validateBody, validateQuery } from "@/middlewares";
-import {
-  checkConfirmationCodeSchema,
-  signinSchema,
-  signupSchema,
-  forgotPasswordSchema,
-} from "@/schemas";
+import { checkConfirmationCodeSchema, signinSchema, signupSchema, forgotPasswordSchema } from "@/schemas";
 
 const authrouter = Router();
 
 authrouter
   .post("/sign-up", validateBody(signupSchema), createUser)
   .post("/sign-in", validateBody(signinSchema), signIn)
-  .post(
-    "/confirm-registration",
-    validateQuery(checkConfirmationCodeSchema),
-    checkConfirmationCode
-  )
+  .post("/confirm-registration", validateQuery(checkConfirmationCodeSchema), checkConfirmationCode)
   .post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword)
   .put("/update-password", validateBody(signinSchema), updatePassword)
   .get("/user", authMiddleware, getUserInfo)

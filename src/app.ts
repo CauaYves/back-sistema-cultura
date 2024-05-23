@@ -7,6 +7,9 @@ import {
   enrollmentsRouter,
   contactRouter,
   collectiveRouter,
+  noticeRouter,
+  noticePreviewRouter,
+  ibgeRouter,
 } from "@/routers";
 import { handleApplicationErrors } from "@/middlewares";
 
@@ -14,13 +17,14 @@ const app = express();
 app
   .use(cors())
   .use(express.json())
-  .get("/health", (_req, res) =>
-    res.send("Status da aplicação: ✅ Em execução")
-  )
+  .get("/health", (_req, res) => res.send("Status da aplicação: ✅ Em execução"))
   .use("/auth", authrouter)
   .use("/enrollment", enrollmentsRouter)
   .use("/contact", contactRouter)
   .use("/collective", collectiveRouter)
+  .use("/notice", noticeRouter)
+  .use("/noticePreview", noticePreviewRouter)
+  .use("/ibge", ibgeRouter)
   .use(handleApplicationErrors);
 
 export function init(): Promise<Express> {
