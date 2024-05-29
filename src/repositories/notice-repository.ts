@@ -4,7 +4,7 @@ import { R2File } from "./enrollment-repository";
 import { Prisma } from "@prisma/client";
 
 async function getAll() {
-  return prisma.noticePreview.findMany();
+  return prisma.notice.findMany();
 }
 
 async function createResponsible(data: FisicPerson, transaction?: Prisma.TransactionClient) {
@@ -125,6 +125,22 @@ async function getOneByNoticePreviewId(noticePreviewId: number) {
   });
 }
 
+async function getOneById(id: number) {
+  return prisma.notice.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+async function getManyById(id: number) {
+  return prisma.notice.findMany({
+    where: {
+      id,
+    },
+  });
+}
+
 export const noticeRepository = {
   getAll,
   create,
@@ -133,4 +149,6 @@ export const noticeRepository = {
   createFile,
   updateFiles,
   getOneByNoticePreviewId,
+  getOneById,
+  getManyById,
 };
