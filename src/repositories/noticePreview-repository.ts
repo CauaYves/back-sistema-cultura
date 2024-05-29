@@ -38,10 +38,19 @@ async function getById(id: number) {
   });
 }
 
+async function getOneById(id: number) {
+  return prisma.noticePreview.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
 export const noticePreviewRepository = {
   create,
   getById,
   deleteById,
   getByName,
   getManyByCityName,
+  getOneById,
 };
