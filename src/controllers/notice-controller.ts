@@ -11,6 +11,30 @@ async function getAll(req: Request, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
+async function getOneById(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const response = await noticeService.getOneById(+id);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+async function getManyById(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const response = await noticeService.getManyById(+id);
+    return res.status(httpStatus.OK).send(response);
+  } catch (error) {
+    if (error.name === "NotFoundError") {
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
+    }
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
 
 async function create(req: AuthenticatedRequest, res: Response) {
   try {
@@ -29,6 +53,8 @@ async function create(req: AuthenticatedRequest, res: Response) {
 const noticeController = {
   getAll,
   create,
+  getOneById,
+  getManyById,
 };
 
 export { noticeController };

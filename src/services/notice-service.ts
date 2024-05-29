@@ -1,5 +1,5 @@
 import { NoticeConnections, NoticeProposal, FisicPerson } from "@/entities";
-import { UnprocessableEntityError, conflictError } from "@/errors";
+import { UnprocessableEntityError, conflictError, notFoundError } from "@/errors";
 import { noticePreviewRepository, noticeRepository } from "@/repositories";
 import { enrollmentService } from "./enrollment-service";
 import { prisma } from "@/config";
@@ -8,30 +8,33 @@ async function getAll() {
   const notices = await noticeRepository.getAll();
   return notices;
 }
+async function getOneById(id: number) {
+  const notice = await noticeRepository.getOneById(id);
+  if (!notice) throw notFoundError();
+  return notice;
+}
+
+async function getManyById(id: number) {
+  const notice = await noticeRepository.getManyById(id);
+  if (!notice) throw notFoundError();
+  return notice;
+}
 
 async function create(
   userId: number,
   noticeProposal: NoticeProposal,
   connections: NoticeConnections,
   responsible: FisicPerson,
-  coordinator: FisicPerson
+  coordinator: FisicPerson,
 ) {
-  const noticeSearch = await noticeRepository.getOneByNoticePreviewId(
-    +connections.noticePreviewId
-  );
-  const culturalAgentId =
-    connections.culturalAgentPFId || connections.culturalAgentPJId;
+  const noticeSearch = await noticeRepository.getOneByNoticePreviewId(+connections.noticePreviewId);
+  const culturalAgentId = connections.culturalAgentPFId || connections.culturalAgentPJId;
 
-  if (
-    noticeSearch.culturalAgentPFId === +culturalAgentId ||
-    noticeSearch.culturalAgentPJId === +culturalAgentId
-  ) {
+  if (noticeSearch.culturalAgentPFId === +culturalAgentId || noticeSearch.culturalAgentPJId === +culturalAgentId) {
     throw conflictError("Você já enviou uma proposta para esse edital! ");
   }
   return await prisma.$transaction(async (transaction) => {
-    const noticePreview = await noticePreviewRepository.getById(
-      +connections.noticePreviewId
-    );
+    const noticePreview = await noticePreviewRepository.getById(+connections.noticePreviewId);
     if (!noticePreview) {
       throw UnprocessableEntityError("Não há edital cadastrado!");
     }
@@ -42,12 +45,9 @@ async function create(
 
     const signedUrl = await Promise.all(
       noticeProposal.attachments.map(async (file) => {
-        const url = await enrollmentService.generateSignedUrl(
-          file,
-          "arquivos_editais"
-        );
+        const url = await enrollmentService.generateSignedUrl(file, "arquivos_editais");
         return url;
-      })
+      }),
     );
 
     const [createdResponsible, createdCoordinator] = await Promise.all([
@@ -63,25 +63,21 @@ async function create(
       createdCoordinator.id,
       +connections.culturalAgentPFId,
       +connections.culturalAgentPJId,
-      transaction
+      transaction,
     );
 
     await Promise.all(
       signedUrl.map(async (url) => {
-        const files = await noticeRepository.createFile(
-          url.r2File,
-          createdNotice.id,
-          transaction
-        );
+        const files = await noticeRepository.createFile(url.r2File, createdNotice.id, transaction);
         return files;
-      })
+      }),
     );
 
     await noticeRepository.updateFiles(
       createdNotice.id,
       +connections.culturalAgentPFId,
       +connections.culturalAgentPJId,
-      transaction
+      transaction,
     );
 
     return signedUrl;
@@ -91,4 +87,6 @@ async function create(
 export const noticeService = {
   getAll,
   create,
+  getOneById,
+  getManyById,
 };
