@@ -1,12 +1,9 @@
 import { NoticePreview } from "@/entities";
-import { UnprocessableEntityError, conflictError } from "@/errors";
+import { UnprocessableEntityError, conflictError, notFoundError } from "@/errors";
 import { noticePreviewRepository } from "@/repositories";
 
 async function create(noticePreview: NoticePreview) {
-  checkIfOpeningDateIsLowerThanEndingDate(
-    noticePreview.openingDate,
-    noticePreview.endDate
-  );
+  checkIfOpeningDateIsLowerThanEndingDate(noticePreview.openingDate, noticePreview.endDate);
   await checkIfAlreadyHaveNoticeWithThisName(noticePreview.name);
 
   const openingDate = new Date(noticePreview.openingDate);
@@ -31,31 +28,31 @@ async function checkIfAlreadyHaveNoticeWithThisName(noticePreviewName: string) {
 }
 
 async function getManyByName(cityName: string) {
-  const noticePreviewList = await noticePreviewRepository.getManyByCityName(
-    cityName
-  );
+  const noticePreviewList = await noticePreviewRepository.getManyByCityName(cityName);
   return noticePreviewList;
 }
 
-function checkIfOpeningDateIsLowerThanEndingDate(
-  opening: string,
-  ending: string
-) {
+function checkIfOpeningDateIsLowerThanEndingDate(opening: string, ending: string) {
   const openingTimestamp = new Date(opening).getTime();
   const endingTimestamp = new Date(ending).getTime();
   if (openingTimestamp > endingTimestamp) {
-    throw UnprocessableEntityError(
-      "A data de ínicio deve ser menor que a data de encerramento! "
-    );
+    throw UnprocessableEntityError("A data de ínicio deve ser menor que a data de encerramento! ");
   }
 }
 
 async function deleteById(id: number) {
-  const deletedNotice = await noticePreviewRepository.deleteById(id);
+  await noticePreviewRepository.deleteById(id);
+}
+
+async function getOneById(id: number) {
+  const noticePreview = await noticePreviewRepository.getOneById(id);
+  if (!noticePreview) throw notFoundError();
+  return noticePreview;
 }
 
 export const noticePreviewService = {
   create,
   deleteById,
   getManyByName,
+  getOneById,
 };
