@@ -28,7 +28,7 @@ async function generateSignedUrl(fileInfo: FileInfo, bucketName: string) {
       Bucket: bucketName,
       Key: fileKey,
     }),
-    { expiresIn: URLexpirationTime }
+    { expiresIn: URLexpirationTime },
   );
   const r2File = {
     ...fileInfo,
@@ -37,61 +37,35 @@ async function generateSignedUrl(fileInfo: FileInfo, bucketName: string) {
   return { signedUrl, r2File };
 }
 
-async function saveUserPj(
-  culturalUser: CulturalModelPJ,
-  fileInfo: FileInfo,
-  userId: number
-) {
+async function saveUserPj(culturalUser: CulturalModelPJ, fileInfo: FileInfo, userId: number) {
   await checkIfAlreadyHaveUserPJ(userId);
-  const { r2File, signedUrl } = await generateSignedUrl(
-    fileInfo,
-    "cadastros_pj"
-  );
+  const { r2File, signedUrl } = await generateSignedUrl(fileInfo, "cadastros_pj");
   const file = await enrollmentRepository.createFilePj(r2File);
 
-  await enrollmentRepository.createCulturalAgentPj(
-    culturalUser,
-    userId,
-    file.id
-  );
+  await enrollmentRepository.createCulturalAgentPj(culturalUser, userId, file.id);
 
   return { signedUrl, fileId: file.id };
 }
 async function checkIfAlreadyHaveUserPJ(userId: number) {
   const search = await enrollmentRepository.getUserCulturalPJById(userId);
   if (search) {
-    throw forbiddenError(
-      "Você já possui um cadastro de agente cultural como pessoa jurídica! "
-    );
+    throw forbiddenError("Você já possui um cadastro de agente cultural como pessoa jurídica! ");
   }
 }
 
-async function saveUserPf(
-  culturalUser: CulturalModelPF,
-  fileInfo: FileInfo,
-  userId: number
-) {
+async function saveUserPf(culturalUser: CulturalModelPF, fileInfo: FileInfo, userId: number) {
   await checkIfAlreadyHaveUserPF(userId);
-  const { r2File, signedUrl } = await generateSignedUrl(
-    fileInfo,
-    "cadastros_pf"
-  );
+  const { r2File, signedUrl } = await generateSignedUrl(fileInfo, "cadastros_pf");
   const file = await enrollmentRepository.createFilePf(r2File);
 
-  await enrollmentRepository.createCulturalAgentPf(
-    culturalUser,
-    userId,
-    file.id
-  );
+  await enrollmentRepository.createCulturalAgentPf(culturalUser, userId, file.id);
 
   return { signedUrl, fileId: file.id };
 }
 async function checkIfAlreadyHaveUserPF(userId: number) {
   const search = await enrollmentRepository.getUserCulturalPFById(userId);
   if (search) {
-    throw forbiddenError(
-      "Você já possui um cadastro de agente cultural como pessoa física! "
-    );
+    throw forbiddenError("Você já possui um cadastro de agente cultural como pessoa física! ");
   }
 }
 
@@ -99,7 +73,6 @@ async function getPF(userId: number) {
   const userPF = await enrollmentRepository.getUserCulturalPFById(userId);
   if (!userPF) throw notFoundError();
   delete userPF.fileId;
-  delete userPF.id;
   delete userPF.userId;
   delete userPF.createdAt;
   delete userPF.updatedAt;
@@ -110,7 +83,6 @@ async function getPJ(userId: number) {
   const userPJ = await enrollmentRepository.getUserCulturalPJById(userId);
   if (!userPJ) throw notFoundError();
   delete userPJ.fileId;
-  delete userPJ.id;
   delete userPJ.userId;
   delete userPJ.createdAt;
   delete userPJ.updatedAt;
