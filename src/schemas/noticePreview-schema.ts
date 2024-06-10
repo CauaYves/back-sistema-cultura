@@ -5,6 +5,7 @@ const noticePreviewSchema = z.object({
   observations: z.string(),
   city: z.string(),
   openingDate: z.string(),
+  uploads: z.array(z.string()),
   endDate: z.string(),
 });
 
