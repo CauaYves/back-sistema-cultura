@@ -1,6 +1,6 @@
 import { AuthenticatedRequest } from "@/middlewares";
 import { noticePreviewService } from "@/services";
-import { Response, Request } from "express";
+import { Request, Response } from "express";
 import httpStatus from "http-status";
 
 async function getManyByName(req: Request, res: Response) {
@@ -26,6 +26,7 @@ async function getOneById(req: Request, res: Response) {
   }
 }
 async function create(req: AuthenticatedRequest, res: Response) {
+  console.log(req.body);
   try {
     const { body } = req;
     const response = await noticePreviewService.create(body);
