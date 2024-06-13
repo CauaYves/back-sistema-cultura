@@ -1,22 +1,8 @@
 import { User } from "@/entities";
-import {
-  conflictError,
-  forbiddenError,
-  notFoundError,
-  unauthorizedError,
-  UnprocessableEntityError,
-} from "@/errors";
+import { conflictError, forbiddenError, notFoundError, unauthorizedError, UnprocessableEntityError } from "@/errors";
 import { sendEmail } from "@/lib/nodemailer";
-import {
-  userRepository,
-  sessionRepository,
-  userConfirmationCodeRepository,
-} from "@/repositories";
-import {
-  confirmRegisterTexts,
-  generateHtml,
-  recoverPasswordTexts,
-} from "@/templates";
+import { sessionRepository, userConfirmationCodeRepository, userRepository } from "@/repositories";
+import { confirmRegisterTexts, generateHtml, recoverPasswordTexts } from "@/templates";
 import { dateFunctions, exclude } from "@/utils";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -51,8 +37,7 @@ async function signIn(params: SignInParams) {
   const { email, password } = params;
 
   const user = await getUserOrFail(email);
-  if (!user.emailConfirmed)
-    throw forbiddenError("confirme seu email antes de prosseguir");
+  if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
 
   await validatePasswordOrFail(password, user.password);
 
@@ -83,7 +68,7 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
 }
 
 async function createOrUpdateSession(userId: number) {
-  const expirationTime = "8h";
+  const expirationTime = "30d";
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, {
     expiresIn: expirationTime,
   });
@@ -106,11 +91,7 @@ async function generateVerificationCode(userId: number) {
   return code;
 }
 
-async function sendConfirmationEmail(
-  email: string,
-  name: string,
-  userId: number
-) {
+async function sendConfirmationEmail(email: string, name: string, userId: number) {
   const code = await generateVerificationCode(userId);
 
   const subject = `Olá ${name}, Confirme seu cadastro na Culturalize`;
@@ -128,9 +109,7 @@ async function isEmailConfirmed(userId: number) {
 
 async function confirmRegistration(code: string) {
   const userId = +code.substring(4, code.length);
-  const userConfirmationCode = await userConfirmationCodeRepository.findOne(
-    userId
-  );
+  const userConfirmationCode = await userConfirmationCodeRepository.findOne(userId);
 
   if (!userConfirmationCode || userConfirmationCode.code !== code) {
     throw unauthorizedError();
@@ -144,10 +123,7 @@ async function recoverPassword(email: string) {
   const userFound = await userRepository.findOneByEmail(email);
   if (!userFound) throw notFoundError();
 
-  await userConfirmationCodeRepository.updateVerificationCode(
-    userFound.id,
-    false
-  );
+  await userConfirmationCodeRepository.updateVerificationCode(userFound.id, false);
   const code = await generateVerificationCode(userFound.id);
   await userConfirmationCodeRepository.update(code, userFound.id);
   const subject = "Código de verificação Culturalize";
@@ -159,14 +135,10 @@ async function recoverPassword(email: string) {
 
 async function updatePassword(body: UpdatePasswordType) {
   const user = await userRepository.findOneByEmail(body.email);
-  const verificationCode = await userConfirmationCodeRepository.findOne(
-    user.id
-  );
+  const verificationCode = await userConfirmationCodeRepository.findOne(user.id);
   const timeLimitInSeconds = 600;
 
-  const stampWhoAsBeenCreated = dateFunctions.transformDatetimeInTimestamp(
-    verificationCode.updatedAt
-  );
+  const stampWhoAsBeenCreated = dateFunctions.transformDatetimeInTimestamp(verificationCode.updatedAt);
 
   const stampNow = dateFunctions.getAtualTimestamp();
 
@@ -184,8 +156,7 @@ async function updatePassword(body: UpdatePasswordType) {
 
 async function updateUserRegistrartion(body: User, userId: number) {
   const user = await getUserOrFail(body.email);
-  if (!user.emailConfirmed)
-    throw forbiddenError("confirme seu email antes de prosseguir");
+  if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
 
   await validatePasswordOrFail(body.password, user.password);
   const hashedPassword = await bcrypt.hash(body.password, 12);
