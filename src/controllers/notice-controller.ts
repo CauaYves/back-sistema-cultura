@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
 import { AuthenticatedRequest } from "@/middlewares";
-import httpStatus from "http-status";
 import { noticeService } from "@/services";
+import { Request, Response } from "express";
+import httpStatus from "http-status";
 
 async function getAll(req: Request, res: Response) {
   try {
@@ -45,6 +45,12 @@ async function create(req: AuthenticatedRequest, res: Response) {
   } catch (error) {
     if (error.name === "ConflictError") {
       return res.status(httpStatus.CONFLICT).send(error.message);
+    }
+    if (error.name === "UnprocessableEntityError") {
+      return res.status(httpStatus.UNPROCESSABLE_ENTITY).send(error.message);
+    }
+    if (error.name === "NotFoundError") {
+      return res.status(httpStatus.NOT_FOUND).send(error.message);
     }
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
