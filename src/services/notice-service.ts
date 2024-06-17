@@ -1,8 +1,8 @@
-import { NoticeConnections, NoticeProposal, FisicPerson } from "@/entities";
+import { prisma } from "@/config";
+import { FisicPerson, NoticeConnections, NoticeProposal } from "@/entities";
 import { UnprocessableEntityError, conflictError, notFoundError } from "@/errors";
 import { noticePreviewRepository, noticeRepository } from "@/repositories";
 import { enrollmentService } from "./enrollment-service";
-import { prisma } from "@/config";
 
 async function getAll() {
   const notices = await noticeRepository.getAll();
@@ -28,10 +28,12 @@ async function create(
   coordinator: FisicPerson,
 ) {
   const noticeSearch = await noticeRepository.getOneByNoticePreviewId(+connections.noticePreviewId);
-  const culturalAgentId = connections.culturalAgentPFId || connections.culturalAgentPJId;
 
-  if (noticeSearch.culturalAgentPFId === +culturalAgentId || noticeSearch.culturalAgentPJId === +culturalAgentId) {
-    throw conflictError("Você já enviou uma proposta para esse edital! ");
+  const culturalAgentId = connections.culturalAgentPFId || connections.culturalAgentPJId;
+  if (noticeSearch) {
+    if (noticeSearch.culturalAgentPFId === +culturalAgentId || noticeSearch.culturalAgentPJId === +culturalAgentId) {
+      throw conflictError("Você já enviou uma proposta para esse edital! ");
+    }
   }
   return await prisma.$transaction(async (transaction) => {
     const noticePreview = await noticePreviewRepository.getById(+connections.noticePreviewId);
@@ -42,14 +44,13 @@ async function create(
     if (!connections.culturalAgentPJId && !connections.culturalAgentPFId) {
       throw UnprocessableEntityError("Agente Cultural não identificado!");
     }
-
     const signedUrl = await Promise.all(
       noticeProposal.attachments.map(async (file) => {
         const url = await enrollmentService.generateSignedUrl(file, "arquivos_editais");
         return url;
       }),
     );
-
+    console.log(3);
     const [createdResponsible, createdCoordinator] = await Promise.all([
       noticeRepository.createResponsible(responsible, transaction),
       noticeRepository.createCoordinator(coordinator, transaction),
@@ -79,7 +80,6 @@ async function create(
       +connections.culturalAgentPJId,
       transaction,
     );
-
     return signedUrl;
   });
 }
