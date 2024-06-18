@@ -28,6 +28,12 @@ async function create(
   coordinator: FisicPerson,
 ) {
   const noticeSearch = await noticeRepository.getOneByNoticePreviewId(+connections.noticePreviewId);
+  const culturalAgent: any = {};
+  if (connections.culturalAgentPFId) {
+    culturalAgent["culturalAgentPFId"] = connections.culturalAgentPFId;
+  } else {
+    culturalAgent["culturalAgentPJId"] = connections.culturalAgentPJId;
+  }
 
   const culturalAgentId = connections.culturalAgentPFId || connections.culturalAgentPJId;
   if (noticeSearch) {
@@ -44,13 +50,17 @@ async function create(
     if (!connections.culturalAgentPJId && !connections.culturalAgentPFId) {
       throw UnprocessableEntityError("Agente Cultural não identificado!");
     }
+
+    const CulturalAgentTypekey = Object.keys(culturalAgent)[0];
+
     const signedUrl = await Promise.all(
       noticeProposal.attachments.map(async (file) => {
         const url = await enrollmentService.generateSignedUrl(file, "arquivos_editais");
+        url.r2File[CulturalAgentTypekey as keyof typeof url.r2File] = culturalAgent[CulturalAgentTypekey];
+        console.log(url);
         return url;
       }),
     );
-    console.log(3);
     const [createdResponsible, createdCoordinator] = await Promise.all([
       noticeRepository.createResponsible(responsible, transaction),
       noticeRepository.createCoordinator(coordinator, transaction),

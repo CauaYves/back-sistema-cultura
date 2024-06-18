@@ -1,7 +1,7 @@
 import { prisma } from "@/config";
 import { FisicPerson, NoticeProposal } from "@/entities";
-import { R2File } from "./enrollment-repository";
 import { Prisma } from "@prisma/client";
+import { R2File } from "./enrollment-repository";
 
 async function getAll() {
   return prisma.notice.findMany();
