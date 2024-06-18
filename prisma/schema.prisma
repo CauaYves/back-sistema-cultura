@@ -170,7 +170,7 @@ model NoticePreview {
   uploads      String[] @default(["RG, CPF, Comprovante de residência"])
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  Notice       Notice?
+  Notice       Notice[]
 }
 
 model Notice {
@@ -183,15 +183,15 @@ model Notice {
   accessDemocratization String             @default("accessDemocratization")
   accessibility         String             @default("acessibilidade")
   noticeFiles           NoticeFiles[]
-  culturalAgentPFId     Int?               @unique
+  culturalAgentPFId     Int?
   CulturalAgentPF       CulturalAgentPF?   @relation(fields: [culturalAgentPFId], references: [id])
-  culturalAgentPJId     Int?               @unique
+  culturalAgentPJId     Int?
   CulturalAgentPJ       CulturalAgentPJ?   @relation(fields: [culturalAgentPJId], references: [id])
-  noticePreviewId       Int                @unique
+  noticePreviewId       Int
   NoticePreview         NoticePreview      @relation(fields: [noticePreviewId], references: [id])
-  responsibleId         Int                @unique
+  responsibleId         Int
   Responsible           Responsible        @relation(fields: [responsibleId], references: [id])
-  projectCoordinatorId  Int                @unique
+  projectCoordinatorId  Int
   ProjectCoordinator    ProjectCoordinator @relation(fields: [projectCoordinatorId], references: [id])
   createdAt             DateTime           @default(now())
   updatedAt             DateTime           @updatedAt
@@ -215,7 +215,7 @@ model Responsible {
   activiesOnLastTwoYears String
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
-  Notice                 Notice?
+  Notice                 Notice[]
 }
 
 model ProjectCoordinator {
@@ -236,7 +236,7 @@ model ProjectCoordinator {
   activiesOnLastTwoYears String
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
-  Notice                 Notice?
+  Notice                 Notice[]
 }
 
 model NoticeFiles {
@@ -244,9 +244,9 @@ model NoticeFiles {
   name              String
   key               String
   contentType       String
-  culturalAgentPFId Int?
+  culturalAgentPFId Int?             @default(0)
   CulturalAgentPF   CulturalAgentPF? @relation(fields: [culturalAgentPFId], references: [id])
-  culturalAgentPJId Int?
+  culturalAgentPJId Int?             @default(0)
   CulturalAgentPJ   CulturalAgentPJ? @relation(fields: [culturalAgentPJId], references: [id])
   createdAt         DateTime         @default(now())
   Notice            Notice           @relation(fields: [noticeId], references: [id])

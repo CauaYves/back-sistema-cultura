@@ -159,7 +159,7 @@ Table NoticePreview {
   uploads String[] [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  Notice Notice
+  Notice Notice [not null]
 }
 
 Table Notice {
@@ -172,15 +172,15 @@ Table Notice {
   accessDemocratization String [not null, default: 'accessDemocratization']
   accessibility String [not null, default: 'acessibilidade']
   noticeFiles NoticeFiles [not null]
-  culturalAgentPFId Int [unique]
+  culturalAgentPFId Int
   CulturalAgentPF CulturalAgentPF
-  culturalAgentPJId Int [unique]
+  culturalAgentPJId Int
   CulturalAgentPJ CulturalAgentPJ
-  noticePreviewId Int [unique, not null]
+  noticePreviewId Int [not null]
   NoticePreview NoticePreview [not null]
-  responsibleId Int [unique, not null]
+  responsibleId Int [not null]
   Responsible Responsible [not null]
-  projectCoordinatorId Int [unique, not null]
+  projectCoordinatorId Int [not null]
   ProjectCoordinator ProjectCoordinator [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -204,7 +204,7 @@ Table Responsible {
   activiesOnLastTwoYears String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  Notice Notice
+  Notice Notice [not null]
 }
 
 Table ProjectCoordinator {
@@ -225,7 +225,7 @@ Table ProjectCoordinator {
   activiesOnLastTwoYears String [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
-  Notice Notice
+  Notice Notice [not null]
 }
 
 Table NoticeFiles {
@@ -233,9 +233,9 @@ Table NoticeFiles {
   name String [not null]
   key String [not null]
   contentType String [not null]
-  culturalAgentPFId Int
+  culturalAgentPFId Int [default: 0]
   CulturalAgentPF CulturalAgentPF
-  culturalAgentPJId Int
+  culturalAgentPJId Int [default: 0]
   CulturalAgentPJ CulturalAgentPJ
   createdAt DateTime [default: `now()`, not null]
   Notice Notice [not null]
@@ -262,11 +262,11 @@ Ref: Notice.culturalAgentPFId > CulturalAgentPF.id
 
 Ref: Notice.culturalAgentPJId > CulturalAgentPJ.id
 
-Ref: Notice.noticePreviewId - NoticePreview.id
+Ref: Notice.noticePreviewId > NoticePreview.id
 
-Ref: Notice.responsibleId - Responsible.id
+Ref: Notice.responsibleId > Responsible.id
 
-Ref: Notice.projectCoordinatorId - ProjectCoordinator.id
+Ref: Notice.projectCoordinatorId > ProjectCoordinator.id
 
 Ref: NoticeFiles.culturalAgentPFId > CulturalAgentPF.id
 

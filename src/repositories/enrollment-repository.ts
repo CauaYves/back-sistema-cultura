@@ -1,11 +1,7 @@
 import { prisma } from "@/config";
 import { CulturalUserPF, CulturalUserPJ, FileInfo } from "@/entities";
 
-async function createCulturalAgentPf(
-  data: CulturalUserPF,
-  userId: number,
-  fileId: string
-) {
+async function createCulturalAgentPf(data: CulturalUserPF, userId: number, fileId: string) {
   return prisma.culturalAgentPF.create({
     data: {
       ...data,
@@ -23,11 +19,7 @@ async function createCulturalAgentPf(
   });
 }
 
-async function createCulturalAgentPj(
-  data: CulturalUserPJ,
-  userId: number,
-  fileId: string
-) {
+async function createCulturalAgentPj(data: CulturalUserPJ, userId: number, fileId: string) {
   return prisma.culturalAgentPJ.create({
     data: {
       ...data,
