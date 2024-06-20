@@ -26,10 +26,7 @@ type Uf = {
 
 async function getUfs() {
   try {
-    const response = await axios.get(
-      "https://servicodados.ibge.gov.br/api/v1/localidades/estados",
-      { httpsAgent }
-    );
+    const response = await axios.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados", { httpsAgent });
     const ufsFormatted = response.data.map((uf: Uf) => {
       const { id, sigla, nome } = uf;
       return { id, sigla, nome };
@@ -43,10 +40,9 @@ async function getUfs() {
 
 async function getCountiesByUfId(ufId: string) {
   try {
-    const response = await axios.get(
-      `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${ufId}/municipios`,
-      { httpsAgent }
-    );
+    const response = await axios.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${ufId}/municipios`, {
+      httpsAgent,
+    });
     const countiesFormatted = response.data.map((county: County) => {
       const { id, nome } = county;
       return { id, nome };
@@ -54,9 +50,7 @@ async function getCountiesByUfId(ufId: string) {
     return countiesFormatted;
   } catch (error) {
     console.log(error);
-    throw new Error(
-      `Erro ao obter municípios do IBGE para o estado ${ufId}: ${error.message}`
-    );
+    throw new Error(`Erro ao obter municípios do IBGE para o estado ${ufId}: ${error.message}`);
   }
 }
 
