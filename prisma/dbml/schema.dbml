@@ -233,13 +233,13 @@ Table NoticeFiles {
   name String [not null]
   key String [not null]
   contentType String [not null]
-  culturalAgentPFId Int [default: 0]
+  culturalAgentPFId Int
   CulturalAgentPF CulturalAgentPF
-  culturalAgentPJId Int [default: 0]
+  culturalAgentPJId Int
   CulturalAgentPJ CulturalAgentPJ
   createdAt DateTime [default: `now()`, not null]
-  Notice Notice [not null]
-  noticeId Int [not null]
+  Notice Notice
+  noticeId Int
 }
 
 Ref: Session.userId - User.id

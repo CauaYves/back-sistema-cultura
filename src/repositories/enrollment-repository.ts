@@ -39,6 +39,8 @@ async function createCulturalAgentPj(data: CulturalUserPJ, userId: number, fileI
 
 export interface R2File extends FileInfo {
   key: string;
+  culturalAgentPFId?: number;
+  culturalAgentPJId?: number;
 }
 
 async function createFilePf(data: R2File) {

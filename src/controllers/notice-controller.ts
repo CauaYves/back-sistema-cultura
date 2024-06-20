@@ -3,7 +3,7 @@ import { noticeService } from "@/services";
 import { Request, Response } from "express";
 import httpStatus from "http-status";
 
-async function getAll(req: Request, res: Response) {
+async function getAll(_req: Request, res: Response) {
   try {
     const response = await noticeService.getAll();
     return res.status(httpStatus.OK).send(response);
@@ -38,6 +38,7 @@ async function getManyById(req: Request, res: Response) {
 
 async function create(req: AuthenticatedRequest, res: Response) {
   try {
+    console.log(req.body);
     const { userId } = req;
     const { proposal, connections, responsible, coordinator } = req.body;
     const response = await noticeService.create(userId, proposal, connections, responsible, coordinator);

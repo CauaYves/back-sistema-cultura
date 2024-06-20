@@ -73,16 +73,70 @@ async function create(
 
 async function createFile(data: R2File, noticeId: number, transaction?: Prisma.TransactionClient) {
   const client = transaction || prisma;
-  return client.noticeFiles.create({
-    data: {
-      ...data,
-      Notice: {
-        connect: {
-          id: noticeId,
-        },
+
+  // Verificar se o Notice existe
+  const notice = await client.notice.findUnique({
+    where: { id: noticeId },
+  });
+  if (!notice) {
+    throw new Error(`Notice with id ${noticeId} does not exist`);
+  }
+
+  // Verificar se o ID do agente cultural existe nas tabelas correspondentes
+  if (data.culturalAgentPFId) {
+    const culturalAgentPF = await client.culturalAgentPF.findUnique({
+      where: { id: data.culturalAgentPFId },
+    });
+    if (!culturalAgentPF) {
+      throw new Error(`CulturalAgentPF with id ${data.culturalAgentPFId} does not exist`);
+    }
+  } else if (data.culturalAgentPJId) {
+    const culturalAgentPJ = await client.culturalAgentPJ.findUnique({
+      where: { id: data.culturalAgentPJId },
+    });
+    if (!culturalAgentPJ) {
+      throw new Error(`CulturalAgentPJ with id ${data.culturalAgentPJId} does not exist`);
+    }
+  }
+
+  // Construir o objeto de dados para criação
+  const fileData: any = {
+    name: data.name,
+    contentType: data.contentType,
+    key: data.key,
+    Notice: {
+      connect: {
+        id: noticeId,
       },
     },
-  });
+  };
+
+  if (data.culturalAgentPFId) {
+    fileData.CulturalAgentPF = {
+      connect: {
+        id: data.culturalAgentPFId,
+      },
+    };
+  } else if (data.culturalAgentPJId) {
+    fileData.CulturalAgentPJ = {
+      connect: {
+        id: data.culturalAgentPJId,
+      },
+    };
+  }
+
+  // Adicionar logs detalhados
+  console.log("fileData a ser criado:", fileData);
+  try {
+    const createdFile = await client.noticeFiles.create({
+      data: fileData,
+    });
+    console.log("Arquivo criado com sucesso:", createdFile);
+    return createdFile;
+  } catch (error) {
+    console.error("Erro ao criar o arquivo:", error);
+    throw error;
+  }
 }
 
 async function updateFiles(

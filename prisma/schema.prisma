@@ -244,11 +244,11 @@ model NoticeFiles {
   name              String
   key               String
   contentType       String
-  culturalAgentPFId Int?             @default(0)
+  culturalAgentPFId Int?
   CulturalAgentPF   CulturalAgentPF? @relation(fields: [culturalAgentPFId], references: [id])
-  culturalAgentPJId Int?             @default(0)
+  culturalAgentPJId Int?
   CulturalAgentPJ   CulturalAgentPJ? @relation(fields: [culturalAgentPJId], references: [id])
   createdAt         DateTime         @default(now())
-  Notice            Notice           @relation(fields: [noticeId], references: [id])
-  noticeId          Int
+  Notice            Notice?          @relation(fields: [noticeId], references: [id])
+  noticeId          Int?
 }

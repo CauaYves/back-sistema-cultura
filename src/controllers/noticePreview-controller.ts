@@ -26,7 +26,6 @@ async function getOneById(req: Request, res: Response) {
   }
 }
 async function create(req: AuthenticatedRequest, res: Response) {
-  console.log(req.body);
   try {
     const { body } = req;
     const response = await noticePreviewService.create(body);

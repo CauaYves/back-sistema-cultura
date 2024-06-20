@@ -43,6 +43,10 @@ async function create(
   }
   return await prisma.$transaction(async (transaction) => {
     const noticePreview = await noticePreviewRepository.getById(+connections.noticePreviewId);
+    if (noticePreview.uploads.length !== noticeProposal.attachments.length) {
+      throw UnprocessableEntityError("Envie os arquivos restantes! ");
+    }
+
     if (!noticePreview) {
       throw UnprocessableEntityError("Não há edital cadastrado!");
     }
@@ -57,7 +61,6 @@ async function create(
       noticeProposal.attachments.map(async (file) => {
         const url = await enrollmentService.generateSignedUrl(file, "arquivos_editais");
         url.r2File[CulturalAgentTypekey as keyof typeof url.r2File] = culturalAgent[CulturalAgentTypekey];
-        console.log(url);
         return url;
       }),
     );
