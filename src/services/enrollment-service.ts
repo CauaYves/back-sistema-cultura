@@ -1,7 +1,6 @@
 // eslint-disable-next-line boundaries/element-types
-import { env } from "@/config";
 import { CulturalUserPF, CulturalUserPJ, FileInfo } from "@/entities";
-import { conflictError, forbiddenError, notFoundError } from "@/errors";
+import { forbiddenError, notFoundError } from "@/errors";
 import { r2 } from "@/lib";
 import { enrollmentRepository } from "@/repositories";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
@@ -55,6 +54,11 @@ async function checkIfAlreadyHaveUserPJ(userId: number) {
 
 async function saveUserPf(culturalUser: CulturalModelPF, fileInfo: FileInfo, userId: number) {
   await checkIfAlreadyHaveUserPF(userId);
+  //remover essa linha depois
+  fileInfo = {
+    name: "teste",
+    contentType: "application/pdf",
+  };
   const { r2File, signedUrl } = await generateSignedUrl(fileInfo, "cadastros_pf");
   const file = await enrollmentRepository.createFilePf(r2File);
 
