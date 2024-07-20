@@ -1,17 +1,18 @@
-import "express-async-errors";
-import express, { Express } from "express";
-import cors from "cors";
 import { connectDb, disconnectDB } from "@/config";
+import { handleApplicationErrors } from "@/middlewares";
 import {
   authrouter,
-  enrollmentsRouter,
-  contactRouter,
+  classificationRouter,
   collectiveRouter,
-  noticeRouter,
-  noticePreviewRouter,
+  contactRouter,
+  enrollmentsRouter,
   ibgeRouter,
+  noticePreviewRouter,
+  noticeRouter,
 } from "@/routers";
-import { handleApplicationErrors } from "@/middlewares";
+import cors from "cors";
+import express, { Express } from "express";
+import "express-async-errors";
 
 const app = express();
 app
@@ -20,6 +21,7 @@ app
   .get("/health", (_req, res) => res.send("Status da aplicação: ✅ Em execução"))
   .use("/auth", authrouter)
   .use("/enrollment", enrollmentsRouter)
+  .use("/notice-classification", classificationRouter)
   .use("/contact", contactRouter)
   .use("/collective", collectiveRouter)
   .use("/notice", noticeRouter)

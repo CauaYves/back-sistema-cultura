@@ -38,7 +38,6 @@ async function getManyById(req: Request, res: Response) {
 
 async function create(req: AuthenticatedRequest, res: Response) {
   try {
-    console.log(req.body);
     const { userId } = req;
     const { proposal, connections, responsible, coordinator } = req.body;
     const response = await noticeService.create(userId, proposal, connections, responsible, coordinator);

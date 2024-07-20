@@ -126,3 +126,14 @@ export interface Proposal {
   executionPlace: string;
   publicServed: string;
 }
+
+export type Classification = {
+  noticeNumber: string;
+  projectNumber: string;
+  proponentName: string;
+  cpf: string;
+  situation: string;
+  category: string;
+  proponent: string;
+  attachments: string[];
+};
