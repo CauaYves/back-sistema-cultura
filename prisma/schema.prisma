@@ -255,25 +255,25 @@ model NoticeFiles {
 }
 
 model Classification {
-  id                    Int                  @id @default(autoincrement())
-  userId                Int
-  noticeNumber          String
-  projectNumber         String
-  category              String
-  proponentName         String
-  cpf                   String
-  situation             String
-  User                  User                 @relation(fields: [userId], references: [id])
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
-  ClassificationFiles   ClassificationFiles? @relation(fields: [classificationFilesId], references: [id])
-  classificationFilesId Int?
+  id                  Int                   @id @default(autoincrement())
+  userId              Int
+  noticeNumber        String
+  projectNumber       String
+  category            String
+  proponentName       String
+  cpf                 String
+  situation           String
+  User                User                  @relation(fields: [userId], references: [id])
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  ClassificationFiles ClassificationFiles[]
 }
 
 model ClassificationFiles {
-  id             Int              @id @default(autoincrement())
-  name           String
-  key            String
-  contentType    String
-  Classification Classification[]
+  id               Int            @id @default(autoincrement())
+  name             String
+  key              String
+  contentType      String
+  classificationId Int
+  Classification   Classification @relation(fields: [classificationId], references: [id])
 }

@@ -6,7 +6,7 @@ import httpStatus from "http-status";
 async function create(req: AuthenticatedRequest, res: Response) {
   try {
     const { body, userId } = req;
-    const result = await classificationService.create(body, userId, body.attachments);
+    const result = await classificationService.create(body, userId);
     return res.status(httpStatus.OK).send(result);
   } catch (error) {
     if (error.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND).send(error.message);

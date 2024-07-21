@@ -1,4 +1,4 @@
-export * from "./classificiation-repository";
+export * from "./classification-repository";
 export * from "./collective-repository";
 export * from "./contact-repository";
 export * from "./enrollment-repository";
