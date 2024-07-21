@@ -16,6 +16,16 @@ export interface CulturalModelPF extends CulturalUserPF {
   userId: number;
   fileId: string;
 }
+export type R2File = {
+  key: string;
+  name: string;
+  contentType: string;
+};
+
+export interface SignedUrl {
+  signedUrl: string;
+  r2File: R2File;
+}
 
 async function generateSignedUrl(fileInfo: FileInfo, bucketName: string) {
   const { name } = fileInfo;
@@ -33,7 +43,8 @@ async function generateSignedUrl(fileInfo: FileInfo, bucketName: string) {
     ...fileInfo,
     key: fileKey,
   };
-  return { signedUrl, r2File };
+  const creatdSignedUrl: SignedUrl = { signedUrl, r2File };
+  return creatdSignedUrl;
 }
 
 async function saveUserPj(culturalUser: CulturalModelPJ, fileInfo: FileInfo, userId: number) {
@@ -98,6 +109,6 @@ const enrollmentService = {
   saveUserPf,
   getPF,
   getPJ,
-  generateSignedUrl,
+  generatePostSignedUrl: generateSignedUrl,
 };
 export { enrollmentService };

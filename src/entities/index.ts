@@ -135,5 +135,5 @@ export type Classification = {
   situation: string;
   category: string;
   proponent: string;
-  attachments: string[];
+  attachments: FileInfo[];
 };
