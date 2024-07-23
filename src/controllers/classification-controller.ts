@@ -24,8 +24,19 @@ async function getOneById(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+async function getFiles(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { userId } = req;
+    const result = await classificationService.getFiles(userId);
+    return res.send(result);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
 const classificationController = {
   create,
+  getFiles,
   getOneById,
 };
 

@@ -1,14 +1,14 @@
 import { Classification } from "@/entities";
 import { notFoundError } from "@/errors";
+import { cloudflareService, directorys } from "@/lib";
 import { classificationRepository, userRepository } from "@/repositories";
-import { enrollmentService } from "./enrollment-service";
 
 async function create(classification: Classification, userId: number) {
   const user = await userRepository.findOneById(userId);
   if (!user) return notFoundError();
 
   const signedUrls = classification.attachments.map(async (attachment) => {
-    const url = await enrollmentService.generatePostSignedUrl(attachment, "arquivos_de_classificacao");
+    const url = await cloudflareService.generatePostSignedUrl(attachment, directorys.arquivos_de_classificacao);
     return url;
   });
 
@@ -19,8 +19,6 @@ async function create(classification: Classification, userId: number) {
   signedUrlsList.forEach(async (signedUrl) => {
     await classificationRepository.createFile(signedUrl.r2File, createdClassification.id);
   });
-  // o classificationFilesId é uma variavel para referenciar todos os arquivos enviados pelo proponente a um edital em especifico, é uma forma de separar todos os arquivos por editais, precisa atualizar o classificationFilesId para referenciar aos arquivos da Cloudflare
-
   return { createdClassification, signedUrlsList };
 }
 
@@ -29,6 +27,27 @@ async function getOneById(userId: number) {
   return classification;
 }
 
-const classificationService = { create, getOneById };
+async function getFiles(userId: number) {
+  const userClassifications = await classificationRepository.getManyById(userId);
+  const userFiles = userClassifications.map(async (classification) => {
+    const classificationFile = await classificationRepository.getFileByClassificationId(classification.id);
+    return classificationFile;
+  });
+  const userFilesResolved = await Promise.all(userFiles);
+  const signedUrls = await Promise.all(
+    userFilesResolved
+      .filter((file) => file && file[0])
+      .map(async (file) => {
+        const signedUrl = await cloudflareService.generateGetSignedUrl(
+          directorys.arquivos_de_classificacao,
+          file[0].key,
+        );
+        return signedUrl;
+      }),
+  );
 
-export { classificationService };
+  const urlsList = await Promise.all(signedUrls);
+  return { urlsList, userClassifications };
+}
+
+export const classificationService = { create, getOneById, getFiles };
