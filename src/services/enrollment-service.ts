@@ -1,4 +1,3 @@
-// eslint-disable-next-line boundaries/element-types
 import { CulturalUserPF, CulturalUserPJ, FileInfo } from "@/entities";
 import { forbiddenError, notFoundError } from "@/errors";
 import { cloudflareService } from "@/lib";
