@@ -1,7 +1,7 @@
 // eslint-disable-next-line boundaries/element-types
 import { CulturalUserPF, CulturalUserPJ, FileInfo } from "@/entities";
 import { forbiddenError, notFoundError } from "@/errors";
-import { clouflareService } from "@/lib";
+import { cloudflareService } from "@/lib";
 import { enrollmentRepository } from "@/repositories";
 
 export interface CulturalModelPJ extends CulturalUserPJ {
@@ -26,7 +26,7 @@ export interface SignedUrl {
 
 async function saveUserPj(culturalUser: CulturalModelPJ, fileInfo: FileInfo, userId: number) {
   await checkIfAlreadyHaveUserPJ(userId);
-  const { r2File, signedUrl } = await clouflareService.generatePostSignedUrl(fileInfo, "cadastros_pj");
+  const { r2File, signedUrl } = await cloudflareService.generatePostSignedUrl(fileInfo, "cadastros_pj");
   const file = await enrollmentRepository.createFilePj(r2File);
 
   await enrollmentRepository.createCulturalAgentPj(culturalUser, userId, file.id);
@@ -47,7 +47,7 @@ async function saveUserPf(culturalUser: CulturalModelPF, fileInfo: FileInfo, use
     name: "teste",
     contentType: "application/pdf",
   };
-  const { r2File, signedUrl } = await clouflareService.generatePostSignedUrl(fileInfo, "cadastros_pf");
+  const { r2File, signedUrl } = await cloudflareService.generatePostSignedUrl(fileInfo, "cadastros_pf");
   const file = await enrollmentRepository.createFilePf(r2File);
 
   await enrollmentRepository.createCulturalAgentPf(culturalUser, userId, file.id);
