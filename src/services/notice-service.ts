@@ -1,8 +1,8 @@
 import { prisma } from "@/config";
 import { FisicPerson, NoticeConnections, NoticeProposal } from "@/entities";
 import { UnprocessableEntityError, conflictError, notFoundError } from "@/errors";
+import { cloudflareService } from "@/lib";
 import { noticePreviewRepository, noticeRepository } from "@/repositories";
-import { enrollmentService } from "./enrollment-service";
 
 async function getAll() {
   const notices = await noticeRepository.getAll();
@@ -59,7 +59,7 @@ async function create(
 
     const signedUrl = await Promise.all(
       noticeProposal.attachments.map(async (file) => {
-        const url = await enrollmentService.generatePostSignedUrl(file, "arquivos_editais");
+        const url = await cloudflareService.generatePostSignedUrl(file, "arquivos_editais");
         url.r2File[CulturalAgentTypekey as keyof typeof url.r2File] = culturalAgent[CulturalAgentTypekey];
         return url;
       }),
