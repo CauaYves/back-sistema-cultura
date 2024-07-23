@@ -34,9 +34,25 @@ async function createFile(r2File: R2File, classificationId: number) {
   });
 }
 
+async function getManyById(userId: number) {
+  return prisma.classification.findMany({
+    where: { userId },
+  });
+}
+
+async function getFileByClassificationId(classificationId: number) {
+  return prisma.classificationFiles.findMany({
+    where: {
+      classificationId,
+    },
+  });
+}
+
 const classificationRepository = {
   create,
+  getManyById,
   getOneById,
   createFile,
+  getFileByClassificationId,
 };
 export { classificationRepository };

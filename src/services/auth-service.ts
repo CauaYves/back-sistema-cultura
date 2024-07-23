@@ -1,6 +1,6 @@
 import { User } from "@/entities";
 import { conflictError, forbiddenError, notFoundError, unauthorizedError, UnprocessableEntityError } from "@/errors";
-import { sendEmail } from "@/lib/nodemailer";
+import { nodemailerService } from "@/lib";
 import { sessionRepository, userConfirmationCodeRepository, userRepository } from "@/repositories";
 import { confirmRegisterTexts, generateHtml, recoverPasswordTexts } from "@/templates";
 import { dateFunctions, exclude } from "@/utils";
@@ -98,7 +98,7 @@ async function sendConfirmationEmail(email: string, name: string, userId: number
   await userConfirmationCodeRepository.create(code, userId);
   const text = generateHtml(email, code, confirmRegisterTexts);
 
-  const emailInfo = await sendEmail(email, subject, text);
+  const emailInfo = await nodemailerService.sendEmail(email, subject, text);
   return emailInfo;
 }
 
@@ -129,7 +129,7 @@ async function recoverPassword(email: string) {
   const subject = "Código de verificação Culturalize";
   const text = generateHtml(email, code, recoverPasswordTexts);
 
-  const emailInfo = await sendEmail(email, subject, text);
+  const emailInfo = await nodemailerService.sendEmail(email, subject, text);
   return emailInfo;
 }
 

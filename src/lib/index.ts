@@ -1,2 +1,2 @@
-export * from "./cloudflare.ts";
+export * from "./cloudflare";
 export * from "./nodemailer";
