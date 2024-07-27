@@ -41,11 +41,7 @@ async function checkIfAlreadyHaveUserPJ(userId: number) {
 
 async function saveUserPf(culturalUser: CulturalModelPF, fileInfo: FileInfo, userId: number) {
   await checkIfAlreadyHaveUserPF(userId);
-  //remover essa linha depois
-  fileInfo = {
-    name: "teste",
-    contentType: "application/pdf",
-  };
+
   const { r2File, signedUrl } = await cloudflareService.generatePostSignedUrl(fileInfo, "cadastros_pf");
   const file = await enrollmentRepository.createFilePf(r2File);
 
