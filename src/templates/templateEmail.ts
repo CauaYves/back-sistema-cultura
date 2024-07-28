@@ -112,7 +112,7 @@ function generateHtml(email: string, code: string, texts: string[]) {
                 <p>
                      Se você não reconhece a conta ${email}, isso significa que alguém provavelmente deu seu endereço de e-mail por engano. Nesse caso, ignore esta mensagem.
                 </p>
-                <p>Atenciosamente,<br />Equipe das Contas do Culturalize</p>
+                <p>Atenciosamente,<br />Equipe das Contas do Indica Cultural</p>
               </td>
             </tr>
             <tr height="32px"></tr>
