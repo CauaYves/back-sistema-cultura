@@ -94,7 +94,7 @@ async function generateVerificationCode(userId: number) {
 async function sendConfirmationEmail(email: string, name: string, userId: number) {
   const code = await generateVerificationCode(userId);
 
-  const subject = `Olá ${name}, Confirme seu cadastro na Culturalize`;
+  const subject = `Olá ${name}, Confirme seu cadastro na Indica Cultural`;
   await userConfirmationCodeRepository.create(code, userId);
   const text = generateHtml(email, code, confirmRegisterTexts);
 
@@ -126,7 +126,7 @@ async function recoverPassword(email: string) {
   await userConfirmationCodeRepository.updateVerificationCode(userFound.id, false);
   const code = await generateVerificationCode(userFound.id);
   await userConfirmationCodeRepository.update(code, userFound.id);
-  const subject = "Código de verificação Culturalize";
+  const subject = "Código de verificação Indica Cultural";
   const text = generateHtml(email, code, recoverPasswordTexts);
 
   const emailInfo = await nodemailerService.sendEmail(email, subject, text);
