@@ -8,7 +8,13 @@ import {
   updatedUserData,
 } from "@/controllers";
 import { authMiddleware, validateBody, validateQuery } from "@/middlewares";
-import { checkConfirmationCodeSchema, forgotPasswordSchema, signinSchema, signupSchema } from "@/schemas";
+import {
+  checkConfirmationCodeSchema,
+  forgotPasswordSchema,
+  signinSchema,
+  signupSchema,
+  updatePasswordSchema,
+} from "@/schemas";
 import { Router } from "express";
 
 const authrouter = Router();
@@ -19,7 +25,7 @@ authrouter
   .post("/confirm-registration", validateQuery(checkConfirmationCodeSchema), checkConfirmationCode)
   .post("/forgot-password", validateBody(forgotPasswordSchema), forgotPassword)
   .get("/check-token", authMiddleware, (_req, res) => res.sendStatus(200))
-  .put("/update-password", validateBody(signinSchema), updatePassword)
+  .put("/update-password", validateBody(updatePasswordSchema), updatePassword)
   .get("/user", authMiddleware, getUserInfo)
   .put("/", authMiddleware, validateBody(signupSchema), updatedUserData);
 
