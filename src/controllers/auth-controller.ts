@@ -54,8 +54,8 @@ async function checkConfirmationCode(req: Request, res: Response) {
 
 async function forgotPassword(req: Request, res: Response) {
   try {
-    const { email } = req.body;
-    const result = await authService.recoverPassword(email);
+    const { cpf } = req.body;
+    const result = await authService.recoverPassword(cpf);
     return res.send(result).status(200);
   } catch (error) {
     if (error.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND).send(error.message);
@@ -88,4 +88,4 @@ async function updatedUserData(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export { getUserInfo, createUser, signIn, checkConfirmationCode, forgotPassword, updatePassword, updatedUserData };
+export { checkConfirmationCode, createUser, forgotPassword, getUserInfo, signIn, updatedUserData, updatePassword };

@@ -119,22 +119,34 @@ async function confirmRegistration(code: string) {
   return "cadastro verificado com sucesso! ";
 }
 
-async function recoverPassword(email: string) {
-  const userFound = await userRepository.findOneByEmail(email);
+function formatCpfOrNot(formatCpf: boolean, cpf: string) {
+  if (formatCpf) {
+    cpf = cpf.replace(/\D/g, "");
+    cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+  } else {
+    cpf = cpf.replace(/\D/g, "");
+  }
+  return cpf;
+}
+
+async function recoverPassword(nonFormatedCPF: string) {
+  const cpfIsWithDots = true;
+  const cpf = formatCpfOrNot(cpfIsWithDots, nonFormatedCPF);
+  const userFound = await userRepository.findOneByCpf(cpf);
   if (!userFound) throw notFoundError();
 
   await userConfirmationCodeRepository.updateVerificationCode(userFound.id, false);
   const code = await generateVerificationCode(userFound.id);
   await userConfirmationCodeRepository.update(code, userFound.id);
   const subject = "Código de verificação Indica Cultural";
-  const text = generateHtml(email, code, recoverPasswordTexts);
+  const text = generateHtml(cpf, code, recoverPasswordTexts);
 
-  const emailInfo = await nodemailerService.sendEmail(email, subject, text);
+  const emailInfo = await nodemailerService.sendEmail(userFound.email, subject, text);
   return emailInfo;
 }
 
 async function updatePassword(body: UpdatePasswordType) {
-  const user = await userRepository.findOneByEmail(body.cpf);
+  const user = await userRepository.findOneByCpf(body.cpf);
   const verificationCode = await userConfirmationCodeRepository.findOne(user.id);
   const timeLimitInSeconds = 600;
 
