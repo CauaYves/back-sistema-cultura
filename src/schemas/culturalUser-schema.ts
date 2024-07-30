@@ -1,4 +1,5 @@
 import Zod from "zod";
+import { regex } from "./regex";
 
 const uploadBodySchema = Zod.object({
   name: Zod.string().min(1),
@@ -7,10 +8,10 @@ const uploadBodySchema = Zod.object({
 
 const enrollmentSchemaPf = Zod.object({
   alternativeTel: Zod.string().max(15),
-  cep: Zod.string().regex(/^\d{5}-\d{3}$/),
+  cep: Zod.string().regex(regex.cep),
   complement: Zod.string(),
   county: Zod.string(),
-  cpf: Zod.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "insira um cpf válido. "),
+  cpf: Zod.string().regex(regex.cpf, "insira um cpf válido. "),
   programs: Zod.array(Zod.string()),
   email: Zod.string().email("insira um email válido. "),
   houseNumber: Zod.string(),
@@ -27,7 +28,7 @@ const enrollmentSchemaPf = Zod.object({
 
 const enrollmentSchemaPj = Zod.object({
   alternativeTel: Zod.string().max(15),
-  cep: Zod.string().regex(/^\d{5}-\d{3}$/),
+  cep: Zod.string().regex(regex.cep),
   cnpj: Zod.string(),
   complement: Zod.string(),
   county: Zod.string(),
@@ -49,4 +50,4 @@ const enrollmentSchemaPj = Zod.object({
   website: Zod.string(),
 });
 
-export { enrollmentSchemaPf, uploadBodySchema, enrollmentSchemaPj };
+export { enrollmentSchemaPf, enrollmentSchemaPj, uploadBodySchema };

@@ -5,3 +5,4 @@ export * from "./contact-schema";
 export * from "./culturalUser-schema";
 export * from "./notice-schema";
 export * from "./noticePreview-schema";
+export * from "./regex";
