@@ -34,9 +34,9 @@ async function create(body: User) {
 }
 
 async function signIn(params: SignInParams) {
-  const { email, password } = params;
+  const { cpf, password } = params;
 
-  const user = await getUserOrFail(email);
+  const user = await getUserOrFail(cpf);
   if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
 
   await validatePasswordOrFail(password, user.password);
@@ -48,8 +48,8 @@ async function signIn(params: SignInParams) {
   };
 }
 
-async function getUserOrFail(email: string) {
-  const user = await userRepository.findOneByEmail(email, {
+async function getUserOrFail(cpf: string) {
+  const user = await userRepository.findOneByCpf(cpf, {
     id: true,
     name: true,
     email: true,
@@ -134,7 +134,7 @@ async function recoverPassword(email: string) {
 }
 
 async function updatePassword(body: UpdatePasswordType) {
-  const user = await userRepository.findOneByEmail(body.email);
+  const user = await userRepository.findOneByEmail(body.cpf);
   const verificationCode = await userConfirmationCodeRepository.findOne(user.id);
   const timeLimitInSeconds = 600;
 
@@ -164,7 +164,7 @@ async function updateUserRegistrartion(body: User, userId: number) {
   await userRepository.update(userId, body);
 }
 
-export type SignInParams = Pick<User, "email" | "password">;
+export type SignInParams = Pick<User, "cpf" | "password">;
 interface UpdatePasswordType extends SignInParams {
   code: string;
 }
