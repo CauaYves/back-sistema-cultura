@@ -3,6 +3,7 @@ import {
   createUser,
   forgotPassword,
   getUserInfo,
+  resendConfirmationCode,
   signIn,
   updatePassword,
   updatedUserData,
@@ -27,6 +28,7 @@ authrouter
   .get("/check-token", authMiddleware, (_req, res) => res.sendStatus(200))
   .put("/update-password", validateBody(updatePasswordSchema), updatePassword)
   .get("/user", authMiddleware, getUserInfo)
-  .put("/", authMiddleware, validateBody(signupSchema), updatedUserData);
+  .put("/", authMiddleware, validateBody(signupSchema), updatedUserData)
+  .post("/resend-code", validateBody(forgotPasswordSchema), resendConfirmationCode);
 
 export { authrouter };

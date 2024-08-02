@@ -78,7 +78,7 @@ async function updatedUserData(req: AuthenticatedRequest, res: Response) {
   try {
     const { userId } = req;
     const { body } = req;
-    await authService.updateUserRegistrartion(body, userId);
+    await authService.updateUserRegistration(body, userId);
     return res.status(httpStatus.CREATED).send("Cadastro alterado com sucesso! ");
   } catch (error) {
     if (error.name === "ConflictError") return res.status(httpStatus.CONFLICT).send(error.message);
@@ -88,4 +88,25 @@ async function updatedUserData(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-export { checkConfirmationCode, createUser, forgotPassword, getUserInfo, signIn, updatedUserData, updatePassword };
+async function resendConfirmationCode(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { cpf } = req.body;
+    await authService.resendConfirmationCode(cpf);
+    return res.status(httpStatus.OK).send("Código reenviado! ");
+  } catch (error) {
+    if (error.name === "NotFoundError") return res.status(httpStatus.NOT_FOUND).send(error.message);
+    if (error.name === "ForbiddenError") return res.status(httpStatus.FORBIDDEN).send(error.message);
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
+export {
+  checkConfirmationCode,
+  createUser,
+  forgotPassword,
+  getUserInfo,
+  resendConfirmationCode,
+  signIn,
+  updatedUserData,
+  updatePassword,
+};

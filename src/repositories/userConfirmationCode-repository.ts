@@ -33,10 +33,22 @@ async function updateVerificationCode(userId: number, used: boolean) {
   });
 }
 
+async function recicle(code: string, userId: number) {
+  return prisma.userConfirmationCode.update({
+    where: {
+      userId,
+    },
+    data: {
+      code,
+    },
+  });
+}
+
 const userConfirmationCodeRepository = {
   create,
   update,
   findOne,
   updateVerificationCode,
+  recicle,
 };
 export { userConfirmationCodeRepository };

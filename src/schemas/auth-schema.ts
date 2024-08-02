@@ -3,7 +3,7 @@ import { regex } from "./regex";
 
 const signupSchema = Zod.object({
   name: Zod.string(),
-  cpf: Zod.string().max(11),
+  cpf: Zod.string().min(11),
   email: Zod.string().email().regex(regex.gmail, "O email deve ser do domínio @gmail.com"),
   password: Zod.string()
     .min(6, "a senha precisa de no mínimo 6 caracteres.")
