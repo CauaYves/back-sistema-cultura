@@ -166,7 +166,7 @@ async function updatePassword(body: UpdatePasswordType) {
   await userConfirmationCodeRepository.updateVerificationCode(user.id, true);
 }
 
-async function updateUserRegistrartion(body: User, userId: number) {
+async function updateUserRegistration(body: User, userId: number) {
   const user = await getUserOrFail(body.email);
   if (!user.emailConfirmed) throw forbiddenError("confirme seu email antes de prosseguir");
 
@@ -180,6 +180,21 @@ export type SignInParams = Pick<User, "cpf" | "password">;
 interface UpdatePasswordType extends SignInParams {
   code: string;
 }
+
+async function resendConfirmationCode(cpf: string) {
+  const user = await userRepository.findOneByCpf(cpf);
+  if (!user) throw notFoundError();
+  if (user.emailConfirmed) throw forbiddenError("email já está confirmado, faça login! ");
+  const codeGenerated = await generateVerificationCode(user.id);
+  const newCode = await userConfirmationCodeRepository.update(codeGenerated, user.id);
+  const subject = `Olá ${user.name}, Confirme seu cadastro na Indica Cultural`;
+  await userConfirmationCodeRepository.recicle(newCode.code, user.id);
+  const text = generateHtml(user.email, newCode.code, confirmRegisterTexts);
+
+  const emailInfo = await nodemailerService.sendEmail(user.email, subject, text);
+  return emailInfo;
+}
+
 const authService = {
   getUserById,
   confirmRegistration,
@@ -187,6 +202,7 @@ const authService = {
   signIn,
   recoverPassword,
   updatePassword,
-  updateUserRegistrartion,
+  updateUserRegistration,
+  resendConfirmationCode,
 };
 export { authService };
