@@ -34,19 +34,16 @@ async function getFiles(userId: number) {
     return classificationFile;
   });
   const userFilesResolved = await Promise.all(userFiles);
-  const signedUrls = await Promise.all(
-    userFilesResolved
-      .filter((file) => file && file[0])
+
+  const flattenedUserFiles = userFilesResolved.flat();
+  const urlsList = await Promise.all(
+    flattenedUserFiles
+      .filter((files) => files)
       .map(async (file) => {
-        const signedUrl = await cloudflareService.generateGetSignedUrl(
-          directorys.arquivos_de_classificacao,
-          file[0].key,
-        );
-        return signedUrl;
+        const url = await cloudflareService.generateGetSignedUrl(directorys.arquivos_de_classificacao, file.key);
+        return url;
       }),
   );
-
-  const urlsList = await Promise.all(signedUrls);
   return { urlsList, userClassifications };
 }
 
