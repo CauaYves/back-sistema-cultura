@@ -8,6 +8,7 @@ const noticePreviewRouter = Router();
 noticePreviewRouter
   .get("/:cityName", noticePreviewController.getManyByName)
   .get("/unique/:id", noticePreviewController.getOneById)
+  .get("/ended/:cityName", noticePreviewController.getEndedByCityName)
   .post("/", validateBody(noticePreviewSchema), noticePreviewController.create)
   .delete("/:id", noticePreviewController.deleteById);
 

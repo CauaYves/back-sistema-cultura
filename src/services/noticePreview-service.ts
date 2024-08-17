@@ -1,6 +1,7 @@
 import { NoticePreview } from "@/entities";
 import { UnprocessableEntityError, conflictError, notFoundError } from "@/errors";
 import { noticePreviewRepository } from "@/repositories";
+import { dateFunctions } from "@/utils";
 
 async function create(noticePreview: NoticePreview) {
   checkIfOpeningDateIsLowerThanEndingDate(noticePreview.openingDate, noticePreview.endDate);
@@ -10,7 +11,7 @@ async function create(noticePreview: NoticePreview) {
   const endDate = new Date(noticePreview.endDate);
 
   if (isNaN(openingDate.getTime()) || isNaN(endDate.getTime())) {
-    throw UnprocessableEntityError("Insira as datas em formato válido! ");
+    throw UnprocessableEntityError("Insira as datas em formato UTC! ");
   }
 
   noticePreview.openingDate = openingDate.toISOString();
@@ -50,9 +51,21 @@ async function getOneById(id: number) {
   return noticePreview;
 }
 
+async function getEndedByCityName(cityName: string) {
+  const noticePreviewList = await noticePreviewRepository.getManyByCityName(cityName);
+  const atualTimestamp = dateFunctions.getAtualTimestamp();
+
+  const filteredNoticePreviewList = noticePreviewList.filter((noticePreview) => {
+    const noticePreviewTimestamp = dateFunctions.transformDatetimeInTimestamp(noticePreview.endDate);
+    return atualTimestamp > noticePreviewTimestamp;
+  });
+  return filteredNoticePreviewList;
+}
+
 export const noticePreviewService = {
   create,
   deleteById,
   getManyByName,
   getOneById,
+  getEndedByCityName,
 };

@@ -37,11 +37,21 @@ async function create(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
 }
-async function deleteById(req: Request, res: Response) {
+async function deleteById(req: AuthenticatedRequest, res: Response) {
   try {
     const id = +req.params.id;
     const response = await noticePreviewService.deleteById(id);
     return res.status(httpStatus.NO_CONTENT).send(response);
+  } catch (error) {
+    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
+  }
+}
+
+async function getEndedByCityName(req: AuthenticatedRequest, res: Response) {
+  try {
+    const { cityName } = req.params;
+    const result = await noticePreviewService.getEndedByCityName(cityName);
+    return res.status(httpStatus.OK).send(result);
   } catch (error) {
     return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error.message);
   }
@@ -52,4 +62,5 @@ export const noticePreviewController = {
   create,
   deleteById,
   getOneById,
+  getEndedByCityName,
 };
